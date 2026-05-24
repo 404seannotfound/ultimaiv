@@ -36,7 +36,7 @@
     height: 100vh;
     background:
       radial-gradient(ellipse at 50% 60%, transparent 30%, rgba(0,0,0,0.55) 75%, rgba(0,0,0,0.85) 100%),
-      url('scenes/wagon_interior.jpeg') center 55% / cover no-repeat;
+      url('/scenes/wagon_interior.jpeg') center 55% / cover no-repeat;
   }
 
   /* --- Abacus across the top --- */
@@ -121,7 +121,7 @@
     backface-visibility: hidden;
     -webkit-backface-visibility: hidden;
   }
-  .card-back-face { background-image: url('scenes/card_back.jpeg'); }
+  .card-back-face { background-image: url('/scenes/card_back.jpeg'); }
   .card-face { transform: rotateY(180deg); }
 
   /* --- Final reveal card (full-screen) --- */
@@ -174,7 +174,7 @@
   #gypsy-avatar {
     width: 6vh; height: 6vh;
     border-radius: 50%;
-    background-image: url('scenes/gypsy.jpeg');
+    background-image: url('/scenes/gypsy.jpeg');
     background-size: 230% auto;
     background-position: 50% 22%;
     border: 2px solid rgba(246,193,112,0.5);
@@ -393,7 +393,7 @@
     display: none;
     background:
       radial-gradient(ellipse at 50% 50%, rgba(20,12,30,0.55) 0%, rgba(0,0,0,0.96) 78%),
-      url('scenes/wagon_interior.jpeg') center 55% / cover no-repeat;
+      url('/scenes/wagon_interior.jpeg') center 55% / cover no-repeat;
     opacity: 0;
     transition: opacity 1.0s ease;
   }
@@ -736,7 +736,7 @@ const DATA = {
   },
 
   virtues: /* INLINED FROM seed/virtues.json + descriptions */ [
-    { id: "honesty",      class: "Mage",     mantra: "AHM",  stone: "sapphire",       color_hex: "#5fa8ff", town: "Moonglow",     principles: "Truth",                          companion: "Mariah",  card: "cards/v2/honesty.jpeg",
+    { id: "honesty",      class: "Mage",     mantra: "AHM",  stone: "sapphire",       color_hex: "#5fa8ff", town: "Moonglow",     principles: "Truth",                          companion: "Mariah",  card: "/cards/v2/honesty.jpeg",
       description: "The first and clearest of the virtues — the practice of speaking and acting in accord with what one knows. In Britannia, Honesty is taught at the Lycaeum on the island of Moonglow, where scholars catalogue the laws of nature beneath the twin moons. Its companion is Mariah the Mage, who reads the world through the patience of her books. Where Honesty is absent, magic itself falls silent — for the spell calls upon the world as it truly is.",
       cultivate: [
         "Say plainly what is so, before deciding what to do about it.",
@@ -744,7 +744,7 @@ const DATA = {
         "Keep a single notebook in which thou record what thou actually saw, not what thou wished to see.",
         "Read what others have written about the world — and let their facts correct thine own."
       ] },
-    { id: "compassion",   class: "Bard",     mantra: "MU",   stone: "yellow",         color_hex: "#f6d65a", town: "Britain",      principles: "Love",                           companion: "Iolo",    card: "cards/v2_fix/compassion.jpeg",
+    { id: "compassion",   class: "Bard",     mantra: "MU",   stone: "yellow",         color_hex: "#f6d65a", town: "Britain",      principles: "Love",                           companion: "Iolo",    card: "/cards/v2_fix/compassion.jpeg",
       description: "The practice of moving toward another's suffering rather than away. Compassion's town is Britain itself, the seat of Lord British's mercy and the great walled city at the kingdom's heart. Its companion is Iolo the Bard, whose lute reaches a wound before his hands do. Where Compassion fails, the world has fewer arms to lift the fallen, and a song that should have soothed turns into noise.",
       cultivate: [
         "Each day, attend to one creature thou wouldst rather pass by.",
@@ -752,7 +752,7 @@ const DATA = {
         "When tempted to judge, ask what thou dost not know.",
         "Carry small kindness in thy pocket: a coin, a bite of bread, a quiet word for the stranger."
       ] },
-    { id: "valor",        class: "Fighter",  mantra: "RA",   stone: "red",            color_hex: "#e74646", town: "Jhelom",       principles: "Courage",                        companion: "Geoffrey",card: "cards/v2/valor.jpeg",
+    { id: "valor",        class: "Fighter",  mantra: "RA",   stone: "red",            color_hex: "#e74646", town: "Jhelom",       principles: "Courage",                        companion: "Geoffrey",card: "/cards/v2/valor.jpeg",
       description: "The willingness to act in the face of cost. Valor's home is Jhelom, the warrior isles where children are taught the sword before the alphabet. Its stone is the red of a heart at full pour. Its companion is Geoffrey the Fighter, who has never asked whether a thing is wise, only whether it is owed. To live without Valor is to live in a smaller circle of the possible, where every door is closed because no one would knock.",
       cultivate: [
         "Do today the small thing thou hast been putting off.",
@@ -760,7 +760,7 @@ const DATA = {
         "Train thy body, that fear meet a vessel ready.",
         "When the room is silent, be the first to answer."
       ] },
-    { id: "justice",      class: "Druid",    mantra: "BEH",  stone: "emerald",        color_hex: "#4dc278", town: "Yew",          principles: "Truth + Love",                   companion: "Jaana",   card: "cards/v2/justice.jpeg",
+    { id: "justice",      class: "Druid",    mantra: "BEH",  stone: "emerald",        color_hex: "#4dc278", town: "Yew",          principles: "Truth + Love",                   companion: "Jaana",   card: "/cards/v2/justice.jpeg",
       description: "The slow balancing of one good against another. Justice sits in Yew, where the courts of judgment hold beneath ancient evergreens older than the kingdom. It combines Truth and Love — the cool sight of what is, met by the warm wish for what should be. Its companion is Jaana the Druid, who listens longer than anyone else before she rules. Without Justice, mercy unmoored drifts into favor, and the law becomes only a fence around the powerful.",
       cultivate: [
         "Hear all parties before thy judgment forms.",
@@ -768,7 +768,7 @@ const DATA = {
         "Read the law thou wouldst use, in full, before applying its edge.",
         "When fairness costs thee, pay it gladly."
       ] },
-    { id: "sacrifice",    class: "Tinker",   mantra: "CAH",  stone: "amber",          color_hex: "#f2974a", town: "Minoc",        principles: "Love + Courage",                 companion: "Julia",   card: "cards/v2/sacrifice.jpeg",
+    { id: "sacrifice",    class: "Tinker",   mantra: "CAH",  stone: "amber",          color_hex: "#f2974a", town: "Minoc",        principles: "Love + Courage",                 companion: "Julia",   card: "/cards/v2/sacrifice.jpeg",
       description: "The willingness to give what one has — time, hope, body, name — for another's good. Sacrifice's home is Minoc, the northern craft-town where every offering is forged in fire. Its stone is the orange of glowing embers, of a thing being shaped and a thing being lost. Its companion is Julia the Tinker, who builds and rebuilds with the same patient hands. Without Sacrifice, love is only sentiment, a word that holds no weight when carried.",
       cultivate: [
         "Give one thing this week thou wouldst rather keep.",
@@ -776,7 +776,7 @@ const DATA = {
         "Send help in another's name, not thine own.",
         "Tend the wound before the meal."
       ] },
-    { id: "honor",        class: "Paladin",  mantra: "SUMM", stone: "amethyst",       color_hex: "#a878e6", town: "Trinsic",      principles: "Courage + Truth",                companion: "Dupre",   card: "cards/v2_fix/honor.jpeg",
+    { id: "honor",        class: "Paladin",  mantra: "SUMM", stone: "amethyst",       color_hex: "#a878e6", town: "Trinsic",      principles: "Courage + Truth",                companion: "Dupre",   card: "/cards/v2_fix/honor.jpeg",
       description: "The keeping of one's word and one's measure even when no one is watching. Honor stands in Trinsic, the walled paladin city whose golden gates open only to those who bow before they enter. It combines Courage and Truth — the courage to act, the truth to which one is bound. Its companion is Dupre the Paladin, whose word stands when his sword breaks. Without Honor, valor becomes mere noise, and the oath becomes a lie that wears armor.",
       cultivate: [
         "Make no promise thou hast not weighed; keep every one thou makest.",
@@ -784,7 +784,7 @@ const DATA = {
         "When thou hast wronged, name the wrong before another names it for thee.",
         "Carry thyself the same when watched and when alone."
       ] },
-    { id: "spirituality", class: "Ranger",   mantra: "OM",   stone: "white diamond",  color_hex: "#f3ebd0", town: "Skara Brae",   principles: "Truth + Love + Courage",         companion: "Shamino", card: "cards/v2/spirituality.jpeg",
+    { id: "spirituality", class: "Ranger",   mantra: "OM",   stone: "white diamond",  color_hex: "#f3ebd0", town: "Skara Brae",   principles: "Truth + Love + Courage",         companion: "Shamino", card: "/cards/v2/spirituality.jpeg",
       description: "The practice of attention to the larger whole — the quiet that holds the noisy things. Spirituality dwells in Skara Brae, the misted isle where the seen and the unseen sit closer than elsewhere. It is the only virtue that joins all three Principles at once — Truth and Love and Courage, the meeting place. Its companion is Shamino the Ranger, who walks where the forest is thickest because that is where the world is most honest. Without Spirituality, every other virtue mistakes itself for the whole.",
       cultivate: [
         "Sit in silence each day, even for the length of a candle's first inch.",
@@ -792,7 +792,7 @@ const DATA = {
         "Walk without a destination once a week.",
         "When thou prayest, pray briefly, and listen long."
       ] },
-    { id: "humility",     class: "Shepherd", mantra: "LUM",  stone: "black",          color_hex: "#888090", town: "New Magincia", principles: "the Void (absence of Pride)",    companion: "Katrina", card: "cards/v2/humility.jpeg",
+    { id: "humility",     class: "Shepherd", mantra: "LUM",  stone: "black",          color_hex: "#888090", town: "New Magincia", principles: "the Void (absence of Pride)",    companion: "Katrina", card: "/cards/v2/humility.jpeg",
       description: "The absence of pride. Of all eight, Humility is the strangest — it derives from the Void, the silence around the Principles. Its town is New Magincia, rebuilt from the ruins of a city that worshipped itself to death. Its stone is unornamented black, plain as a river-pebble. Its companion is Katrina the Shepherd, who tends what others overlook. Without Humility, every other virtue becomes a trophy to be displayed, and the Avatar becomes only the latest king to fall.",
       cultivate: [
         "Praise another's work before thou speakest of thine.",
@@ -917,7 +917,7 @@ function playAudio(relPath) {
   // relPath is relative to /audio, no extension. e.g. 'gypsy/entry' or 'parables/compassion-honesty'
   if (!relPath) return;
   if (currentAudio) { try { currentAudio.pause(); } catch (e) {} currentAudio = null; }
-  const a = new Audio(`audio/${relPath}.mp3`);
+  const a = new Audio(`/audio/${relPath}.mp3`);
   a.volume = 0.95;
   // Browsers may still reject autoplay if the user never interacted; we swallow that.
   a.play().catch(() => {});
@@ -1124,8 +1124,10 @@ async function revealFinalCard() {
   await sleep(2400);
   await gypsySpeaks(DATA.script.closing[winner], `closing_${winner}`);
 
-  // Move dialogue forward a beat for the whisper.
-  nextButton('…', () => beginWhisper(winner));
+  // The reveal covers the dialogue, so a button here would be hidden.
+  // Let the closing line breathe, then auto-advance into the whisper + browser.
+  await sleep(6500);
+  beginWhisper(winner);
 }
 
 async function beginWhisper(winner) {
@@ -1267,7 +1269,7 @@ window.addEventListener('DOMContentLoaded', () => {
   }
 
   // Otherwise: usual ceremony flow — intro gate, then casting.
-  const prefetch = new Audio('audio/gypsy/entry.mp3');
+  const prefetch = new Audio('/audio/gypsy/entry.mp3');
   prefetch.preload = 'auto';
 
   const enter = () => {
