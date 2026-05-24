@@ -506,47 +506,132 @@
     padding: 0.4vh 1.2vw;
   }
   .cb-close:hover { color: var(--candle-amber); }
-  .cb-dots {
+  /* Cultivation suggestions inside the info panel */
+  .cb-cultivate {
+    margin-top: 2.4vh;
+    padding-top: 2vh;
+    border-top: 1px solid rgba(246,193,112,0.18);
+  }
+  .cb-cultivate-heading {
+    font-family: 'IM Fell English SC', serif;
+    font-size: 1.5vh;
+    letter-spacing: 0.18em;
+    color: var(--cb-glow, var(--candle-amber));
+    margin-bottom: 1.2vh;
+    text-transform: lowercase;
+  }
+  .cb-cultivate ul {
+    list-style: none;
+    margin: 0; padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.8vh;
+  }
+  .cb-cultivate li {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 1.9vh;
+    line-height: 1.45;
+    color: var(--parchment);
+    padding-left: 1.6vw;
+    position: relative;
+  }
+  .cb-cultivate li::before {
+    content: '·';
     position: absolute;
-    bottom: 3.6vh;
+    left: 0.4vw;
+    color: var(--cb-glow, var(--candle-amber));
+    font-size: 2.4vh;
+    line-height: 1;
+    top: 0.1vh;
+  }
+
+  /* Thumbnail strip — replaces the old dots */
+  .cb-thumbs {
+    position: absolute;
+    bottom: 8.2vh;
     left: 50%;
     transform: translateX(-50%);
     display: flex;
-    gap: 1.4vh;
-    padding: 1.2vh 2vw;
-    background: rgba(0,0,0,0.4);
-    border-radius: 999px;
+    gap: 1vw;
+    padding: 1vh 1.4vw;
+    background: rgba(0,0,0,0.5);
+    border-radius: 1.2vh;
     border: 1px solid rgba(246,193,112,0.18);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    max-width: 92vw;
+    overflow-x: auto;
   }
-  .cb-dot {
-    width: 1.4vh; height: 1.4vh;
-    border-radius: 50%;
-    background: rgba(255,255,255,0.18);
+  .cb-thumb {
+    width: 5.4vh;
+    aspect-ratio: 2 / 3;
+    border-radius: 0.4vh;
+    background-size: cover;
+    background-position: center;
     cursor: pointer;
-    transition: all 200ms;
+    opacity: 0.55;
+    transition: all 240ms;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.5);
+    flex-shrink: 0;
   }
-  .cb-dot:hover { background: rgba(255,255,255,0.4); }
-  .cb-dot.current {
-    background: var(--cb-glow, var(--candle-amber));
-    box-shadow: 0 0 12px var(--cb-glow, var(--candle-amber));
-    transform: scale(1.4);
+  .cb-thumb:hover { opacity: 0.95; transform: translateY(-3px) scale(1.04); }
+  .cb-thumb.current {
+    opacity: 1;
+    box-shadow: 0 0 14px var(--cb-glow, var(--candle-amber)), 0 4px 14px rgba(0,0,0,0.6);
+    transform: translateY(-4px) scale(1.08);
   }
 
-  /* "View the deck" pill on the permalink panel */
-  #view-deck {
+  /* Footer: permalink + replay + github */
+  .cb-footer {
+    position: absolute;
+    bottom: 2.2vh;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.6vh;
+    width: max-content;
+    max-width: 92vw;
+  }
+  .cb-permalink {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 1.6vh;
+    color: var(--parchment-dim);
+    text-decoration: none;
+    border-bottom: 1px dotted rgba(246,193,112,0.3);
+    padding-bottom: 0.2vh;
+  }
+  .cb-permalink:hover { color: var(--candle-amber); }
+  .cb-footer-actions {
+    display: flex;
+    gap: 1.4vw;
+    align-items: center;
+  }
+  .cb-pill {
     background: transparent;
-    border: 1px solid rgba(246,193,112,0.35);
+    border: 1px solid rgba(246,193,112,0.3);
     color: var(--candle-amber);
-    padding: 1vh 3vw;
     font-family: 'IM Fell English SC', serif;
     font-size: 1.3vh;
     letter-spacing: 0.18em;
+    padding: 0.9vh 2.4vw;
     border-radius: 999px;
     cursor: pointer;
+    text-decoration: none;
     transition: all 200ms;
-    margin-top: 0.4vh;
+    text-transform: lowercase;
   }
-  #view-deck:hover { background: rgba(40,28,18,0.6); box-shadow: 0 0 16px rgba(246,193,112,0.3); }
+  .cb-pill:hover {
+    border-color: var(--candle-amber);
+    background: rgba(40,28,18,0.6);
+    box-shadow: 0 0 14px rgba(246,193,112,0.3);
+  }
+
+  /* hide the permalink panel — its contents now live inside the card browser */
+  #permalink-panel { display: none !important; }
 </style>
 </head>
 <body>
@@ -602,9 +687,20 @@
         <h2 class="cb-virtue" id="cb-virtue">Honesty</h2>
         <div class="cb-meta" id="cb-meta"></div>
         <p class="cb-desc" id="cb-desc"></p>
+        <div class="cb-cultivate" id="cb-cultivate">
+          <div class="cb-cultivate-heading">To cultivate this virtue</div>
+          <ul id="cb-cultivate-list"></ul>
+        </div>
       </div>
     </div>
-    <div class="cb-dots" id="cb-dots"></div>
+    <div class="cb-thumbs" id="cb-thumbs"></div>
+    <div class="cb-footer">
+      <a class="cb-permalink" id="cb-permalink" href="#" style="display:none;"></a>
+      <div class="cb-footer-actions">
+        <button class="cb-pill" id="cb-replay">Begin Again</button>
+        <a class="cb-pill cb-github" id="cb-github" href="https://github.com/404seannotfound/ultimaiv" target="_blank" rel="noopener">source on GitHub →</a>
+      </div>
+    </div>
   </div>
 
 </div>
@@ -641,21 +737,69 @@ const DATA = {
 
   virtues: /* INLINED FROM seed/virtues.json + descriptions */ [
     { id: "honesty",      class: "Mage",     mantra: "AHM",  stone: "sapphire",       color_hex: "#5fa8ff", town: "Moonglow",     principles: "Truth",                          companion: "Mariah",  card: "cards/v2/honesty.jpeg",
-      description: "The first and clearest of the virtues — the practice of speaking and acting in accord with what one knows. In Britannia, Honesty is taught at the Lycaeum on the island of Moonglow, where scholars catalogue the laws of nature beneath the twin moons. Its companion is Mariah the Mage, who reads the world through the patience of her books. Where Honesty is absent, magic itself falls silent — for the spell calls upon the world as it truly is." },
+      description: "The first and clearest of the virtues — the practice of speaking and acting in accord with what one knows. In Britannia, Honesty is taught at the Lycaeum on the island of Moonglow, where scholars catalogue the laws of nature beneath the twin moons. Its companion is Mariah the Mage, who reads the world through the patience of her books. Where Honesty is absent, magic itself falls silent — for the spell calls upon the world as it truly is.",
+      cultivate: [
+        "Say plainly what is so, before deciding what to do about it.",
+        "Notice when thou softenest a thing to spare thyself the saying.",
+        "Keep a single notebook in which thou record what thou actually saw, not what thou wished to see.",
+        "Read what others have written about the world — and let their facts correct thine own."
+      ] },
     { id: "compassion",   class: "Bard",     mantra: "MU",   stone: "yellow",         color_hex: "#f6d65a", town: "Britain",      principles: "Love",                           companion: "Iolo",    card: "cards/v2_fix/compassion.jpeg",
-      description: "The practice of moving toward another's suffering rather than away. Compassion's town is Britain itself, the seat of Lord British's mercy and the great walled city at the kingdom's heart. Its companion is Iolo the Bard, whose lute reaches a wound before his hands do. Where Compassion fails, the world has fewer arms to lift the fallen, and a song that should have soothed turns into noise." },
+      description: "The practice of moving toward another's suffering rather than away. Compassion's town is Britain itself, the seat of Lord British's mercy and the great walled city at the kingdom's heart. Its companion is Iolo the Bard, whose lute reaches a wound before his hands do. Where Compassion fails, the world has fewer arms to lift the fallen, and a song that should have soothed turns into noise.",
+      cultivate: [
+        "Each day, attend to one creature thou wouldst rather pass by.",
+        "Listen to a grief without trying to mend it.",
+        "When tempted to judge, ask what thou dost not know.",
+        "Carry small kindness in thy pocket: a coin, a bite of bread, a quiet word for the stranger."
+      ] },
     { id: "valor",        class: "Fighter",  mantra: "RA",   stone: "red",            color_hex: "#e74646", town: "Jhelom",       principles: "Courage",                        companion: "Geoffrey",card: "cards/v2/valor.jpeg",
-      description: "The willingness to act in the face of cost. Valor's home is Jhelom, the warrior isles where children are taught the sword before the alphabet. Its stone is the red of a heart at full pour. Its companion is Geoffrey the Fighter, who has never asked whether a thing is wise, only whether it is owed. To live without Valor is to live in a smaller circle of the possible, where every door is closed because no one would knock." },
+      description: "The willingness to act in the face of cost. Valor's home is Jhelom, the warrior isles where children are taught the sword before the alphabet. Its stone is the red of a heart at full pour. Its companion is Geoffrey the Fighter, who has never asked whether a thing is wise, only whether it is owed. To live without Valor is to live in a smaller circle of the possible, where every door is closed because no one would knock.",
+      cultivate: [
+        "Do today the small thing thou hast been putting off.",
+        "Speak the hard sentence first, before the easy one.",
+        "Train thy body, that fear meet a vessel ready.",
+        "When the room is silent, be the first to answer."
+      ] },
     { id: "justice",      class: "Druid",    mantra: "BEH",  stone: "emerald",        color_hex: "#4dc278", town: "Yew",          principles: "Truth + Love",                   companion: "Jaana",   card: "cards/v2/justice.jpeg",
-      description: "The slow balancing of one good against another. Justice sits in Yew, where the courts of judgment hold beneath ancient evergreens older than the kingdom. It combines Truth and Love — the cool sight of what is, met by the warm wish for what should be. Its companion is Jaana the Druid, who listens longer than anyone else before she rules. Without Justice, mercy unmoored drifts into favor, and the law becomes only a fence around the powerful." },
+      description: "The slow balancing of one good against another. Justice sits in Yew, where the courts of judgment hold beneath ancient evergreens older than the kingdom. It combines Truth and Love — the cool sight of what is, met by the warm wish for what should be. Its companion is Jaana the Druid, who listens longer than anyone else before she rules. Without Justice, mercy unmoored drifts into favor, and the law becomes only a fence around the powerful.",
+      cultivate: [
+        "Hear all parties before thy judgment forms.",
+        "Ask of every ruling: would I make this same call against a friend?",
+        "Read the law thou wouldst use, in full, before applying its edge.",
+        "When fairness costs thee, pay it gladly."
+      ] },
     { id: "sacrifice",    class: "Tinker",   mantra: "CAH",  stone: "amber",          color_hex: "#f2974a", town: "Minoc",        principles: "Love + Courage",                 companion: "Julia",   card: "cards/v2/sacrifice.jpeg",
-      description: "The willingness to give what one has — time, hope, body, name — for another's good. Sacrifice's home is Minoc, the northern craft-town where every offering is forged in fire. Its stone is the orange of glowing embers, of a thing being shaped and a thing being lost. Its companion is Julia the Tinker, who builds and rebuilds with the same patient hands. Without Sacrifice, love is only sentiment, a word that holds no weight when carried." },
+      description: "The willingness to give what one has — time, hope, body, name — for another's good. Sacrifice's home is Minoc, the northern craft-town where every offering is forged in fire. Its stone is the orange of glowing embers, of a thing being shaped and a thing being lost. Its companion is Julia the Tinker, who builds and rebuilds with the same patient hands. Without Sacrifice, love is only sentiment, a word that holds no weight when carried.",
+      cultivate: [
+        "Give one thing this week thou wouldst rather keep.",
+        "Take the harder watch when the duty is shared.",
+        "Send help in another's name, not thine own.",
+        "Tend the wound before the meal."
+      ] },
     { id: "honor",        class: "Paladin",  mantra: "SUMM", stone: "amethyst",       color_hex: "#a878e6", town: "Trinsic",      principles: "Courage + Truth",                companion: "Dupre",   card: "cards/v2_fix/honor.jpeg",
-      description: "The keeping of one's word and one's measure even when no one is watching. Honor stands in Trinsic, the walled paladin city whose golden gates open only to those who bow before they enter. It combines Courage and Truth — the courage to act, the truth to which one is bound. Its companion is Dupre the Paladin, whose word stands when his sword breaks. Without Honor, valor becomes mere noise, and the oath becomes a lie that wears armor." },
+      description: "The keeping of one's word and one's measure even when no one is watching. Honor stands in Trinsic, the walled paladin city whose golden gates open only to those who bow before they enter. It combines Courage and Truth — the courage to act, the truth to which one is bound. Its companion is Dupre the Paladin, whose word stands when his sword breaks. Without Honor, valor becomes mere noise, and the oath becomes a lie that wears armor.",
+      cultivate: [
+        "Make no promise thou hast not weighed; keep every one thou makest.",
+        "Stand by thy word when it costs thee, and that is when it counts.",
+        "When thou hast wronged, name the wrong before another names it for thee.",
+        "Carry thyself the same when watched and when alone."
+      ] },
     { id: "spirituality", class: "Ranger",   mantra: "OM",   stone: "white diamond",  color_hex: "#f3ebd0", town: "Skara Brae",   principles: "Truth + Love + Courage",         companion: "Shamino", card: "cards/v2/spirituality.jpeg",
-      description: "The practice of attention to the larger whole — the quiet that holds the noisy things. Spirituality dwells in Skara Brae, the misted isle where the seen and the unseen sit closer than elsewhere. It is the only virtue that joins all three Principles at once — Truth and Love and Courage, the meeting place. Its companion is Shamino the Ranger, who walks where the forest is thickest because that is where the world is most honest. Without Spirituality, every other virtue mistakes itself for the whole." },
+      description: "The practice of attention to the larger whole — the quiet that holds the noisy things. Spirituality dwells in Skara Brae, the misted isle where the seen and the unseen sit closer than elsewhere. It is the only virtue that joins all three Principles at once — Truth and Love and Courage, the meeting place. Its companion is Shamino the Ranger, who walks where the forest is thickest because that is where the world is most honest. Without Spirituality, every other virtue mistakes itself for the whole.",
+      cultivate: [
+        "Sit in silence each day, even for the length of a candle's first inch.",
+        "Read the old books slowly, looking for what wishes to be heard.",
+        "Walk without a destination once a week.",
+        "When thou prayest, pray briefly, and listen long."
+      ] },
     { id: "humility",     class: "Shepherd", mantra: "LUM",  stone: "black",          color_hex: "#888090", town: "New Magincia", principles: "the Void (absence of Pride)",    companion: "Katrina", card: "cards/v2/humility.jpeg",
-      description: "The absence of pride. Of all eight, Humility is the strangest — it derives from the Void, the silence around the Principles. Its town is New Magincia, rebuilt from the ruins of a city that worshipped itself to death. Its stone is unornamented black, plain as a river-pebble. Its companion is Katrina the Shepherd, who tends what others overlook. Without Humility, every other virtue becomes a trophy to be displayed, and the Avatar becomes only the latest king to fall." }
+      description: "The absence of pride. Of all eight, Humility is the strangest — it derives from the Void, the silence around the Principles. Its town is New Magincia, rebuilt from the ruins of a city that worshipped itself to death. Its stone is unornamented black, plain as a river-pebble. Its companion is Katrina the Shepherd, who tends what others overlook. Without Humility, every other virtue becomes a trophy to be displayed, and the Avatar becomes only the latest king to fall.",
+      cultivate: [
+        "Praise another's work before thou speakest of thine.",
+        "Sit lower than thy station for a meal.",
+        "Refuse one honor this season that would set thee apart.",
+        "Do a good deed and tell no one of it."
+      ] }
   ],
 
   parables: /* INLINED FROM seed/parables.json */ {
@@ -992,25 +1136,24 @@ async function beginWhisper(winner) {
   w.classList.add('shown');
   playAudio('gypsy/whisper');
   await sleep(4500);
-  showPermalink(winner);
+  endIntoBrowser(winner);
 }
 
-async function showPermalink(winner) {
+async function endIntoBrowser(winner) {
   $('#whisper').classList.remove('shown');
-  await sleep(2000);
-  $('#dialogue').style.opacity = 1;
   $('#dialogue').style.display = 'none';
+  await sleep(1200);
 
+  // Show the permalink inside the card browser footer.
   const url = `/reading/${winner}-${STATE.sessionId}`;
-  $('#permalink-url').textContent = url;
-  $('#permalink-url').href = url;
-  $('#permalink-panel').classList.add('shown');
+  const link = $('#cb-permalink');
+  link.textContent = url;
+  link.href = url;
+  link.style.display = '';
 
-  $('#replay').onclick = () => {
-    $('#dialogue').style.display = '';
-    $('#dialogue').style.opacity = 1;
-    startCasting();
-  };
+  // Open the browser with the chosen virtue selected.
+  const idx = DATA.virtues.findIndex(v => v.id === winner);
+  openCardBrowser(idx >= 0 ? idx : 0, true);
 }
 
 /* ============================================================
@@ -1026,6 +1169,7 @@ function renderCardBrowser() {
   const virtueEl = $('#cb-virtue');
   const meta = $('#cb-meta');
   const desc = $('#cb-desc');
+  const cultivateList = $('#cb-cultivate-list');
 
   // Brief fade between cards.
   card.classList.add('fade');
@@ -1043,22 +1187,29 @@ function renderCardBrowser() {
       `<span><b>stone</b> ${v.stone}</span>` +
       `<span><b>companion</b> ${v.companion}</span>`;
     desc.textContent = v.description;
+    cultivateList.innerHTML = '';
+    (v.cultivate || []).forEach(s => {
+      const li = document.createElement('li');
+      li.textContent = s;
+      cultivateList.appendChild(li);
+    });
     card.classList.remove('fade');
     mantra.classList.remove('fade');
-    renderDots();
+    renderThumbs();
   }, 200);
 }
 
-function renderDots() {
-  const dots = $('#cb-dots');
-  dots.innerHTML = '';
+function renderThumbs() {
+  const tn = $('#cb-thumbs');
+  tn.innerHTML = '';
   DATA.virtues.forEach((v, i) => {
-    const d = document.createElement('div');
-    d.className = 'cb-dot' + (i === CB.index ? ' current' : '');
-    d.title = v.id;
-    d.style.setProperty('--cb-glow', v.color_hex);
-    d.addEventListener('click', () => { CB.index = i; renderCardBrowser(); });
-    dots.appendChild(d);
+    const t = document.createElement('div');
+    t.className = 'cb-thumb' + (i === CB.index ? ' current' : '');
+    t.title = v.id;
+    t.style.backgroundImage = `url('${v.card}')`;
+    t.style.setProperty('--cb-glow', v.color_hex);
+    t.addEventListener('click', () => { CB.index = i; renderCardBrowser(); });
+    tn.appendChild(t);
   });
 }
 
@@ -1075,11 +1226,9 @@ function openCardBrowser(startIndex = 0, cameFromCeremony = false) {
 function closeCardBrowser() {
   $('#card-browser').classList.remove('cb-shown');
   $('#card-browser').setAttribute('aria-hidden', 'true');
-  if (!CB.cameFromCeremony) {
-    // Direct /cards visit — send them back to the wagon door.
-    history.pushState({}, '', '/');
-    location.reload();
-  }
+  // Whether opened from the ceremony or from /cards, closing returns to the wagon.
+  history.pushState({}, '', '/');
+  location.reload();
 }
 
 function cbNext() { CB.index = (CB.index + 1) % 8; renderCardBrowser(); }
@@ -1105,7 +1254,7 @@ window.addEventListener('DOMContentLoaded', () => {
   $('#cb-close').addEventListener('click', closeCardBrowser);
   $('#cb-prev').addEventListener('click', cbPrev);
   $('#cb-next').addEventListener('click', cbNext);
-  $('#view-deck').addEventListener('click', () => openCardBrowser(0, true));
+  $('#cb-replay').addEventListener('click', () => { location.assign('/'); });
 
   // Direct /cards visit bypasses the wagon entirely.
   if (isCardsRoute()) {
