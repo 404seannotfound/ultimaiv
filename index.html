@@ -385,6 +385,18 @@
     background: linear-gradient(180deg, rgba(180,120,60,0.7), rgba(100,60,25,0.9));
     box-shadow: 0 0 20px rgba(246,193,112,0.4);
   }
+  #intro-skip {
+    margin-top: 0.6vh;
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 1.7vh;
+    color: var(--parchment-dim);
+    text-decoration: none;
+    border-bottom: 1px dotted rgba(246,193,112,0.3);
+    padding-bottom: 0.15vh;
+    transition: color 200ms;
+  }
+  #intro-skip:hover { color: var(--candle-amber); border-bottom-color: var(--candle-amber); }
 
   /* --- Card Browser (also serves /cards) --- */
   #card-browser {
@@ -404,7 +416,7 @@
     grid-template-columns: 1fr 1.05fr;
     gap: 4vw;
     align-items: center;
-    padding: 6vh 6vw 10vh;
+    padding: 4vh 6vw 22vh;
     max-width: 1500px;
     margin: 0 auto;
   }
@@ -642,6 +654,7 @@
     <div id="intro-title">THE CASTING</div>
     <div id="intro-sub">A wagon stands at the edge of the fair. The wind has pushed thee toward its door.</div>
     <button id="intro-enter">Enter the Wagon</button>
+    <a id="intro-skip" href="/cards/">or skip ahead and just see the cards →</a>
   </div>
 
   <div id="abacus" aria-label="abacus of virtues"></div>
