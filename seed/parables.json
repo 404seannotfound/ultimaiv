@@ -1,0 +1,202 @@
+{
+  "_comment": "Original short medieval-parable placeholders, one per virtue pairing (28 total). Each is hand-authored as scaffolding for the prototype; production will replace these with live LLM-generated parables seeded by this same structure. The pairing key is alphabetical: 'compassion-honesty' not 'honesty-compassion'.",
+  "_schema": "key: '<virtueA>-<virtueB>' (alphabetical). scene: shared setup. options[virtueId]: the answer that embodies that virtue.",
+  "parables": {
+    "compassion-honesty": {
+      "scene": "Thou art a healer. The dying man clutches thy sleeve and asks if he shall see the morning. Thou knowest he will not.",
+      "options": {
+        "honesty": "Tell him plainly, with thy hand upon his.",
+        "compassion": "Promise him morning, that he may sleep without fear."
+      }
+    },
+    "honesty-valor": {
+      "scene": "A captain of the guard hath fled an outnumbered fight, leaving his men. He asks thee in private if his honor stands.",
+      "options": {
+        "honesty": "Say what is true: thou didst run.",
+        "valor": "Say nothing. Take up his sword thyself, that the next fight be answered."
+      }
+    },
+    "honesty-justice": {
+      "scene": "Thou art a witness at trial. The accused is plainly guilty, but only thou knowest a fact that would acquit him on a technicality.",
+      "options": {
+        "honesty": "Tell every fact in thy keeping, and let the court decide.",
+        "justice": "Tell only what serves the just outcome thou knowest is right."
+      }
+    },
+    "honesty-sacrifice": {
+      "scene": "Soldiers come asking if thou hast seen the boy they hunt. He sleeps in thy cellar. He is innocent.",
+      "options": {
+        "honesty": "Tell them what thou knowest. The truth is not thine to bend.",
+        "sacrifice": "Lie, and take whatever punishment falls when the lie is found."
+      }
+    },
+    "honesty-honor": {
+      "scene": "Thou hast given thy word to keep a friend's secret. Now a stranger asks the very question that secret would answer.",
+      "options": {
+        "honesty": "Speak the secret, for thy word to truth is older than thy word to him.",
+        "honor": "Refuse to answer. A vow is a vow."
+      }
+    },
+    "honesty-spirituality": {
+      "scene": "Thou hast seen a vision at the shrine that thy mind cannot explain. The brothers ask: what didst thou see?",
+      "options": {
+        "honesty": "Describe it as it came, however strange, and trust them to weigh it.",
+        "spirituality": "Hold the vision close. Some things are not meant for the mouths of others."
+      }
+    },
+    "honesty-humility": {
+      "scene": "A traveler praises thee for a deed thou didst perform. He believes thee a great hero.",
+      "options": {
+        "honesty": "Tell him thy part, no more and no less. The deed was thine.",
+        "humility": "Say only that any would have done the same, and let his eyes turn elsewhere."
+      }
+    },
+    "compassion-valor": {
+      "scene": "A young soldier asks to ride with thee against a foe far beyond his strength. He will die if he comes.",
+      "options": {
+        "compassion": "Send him home to his mother. Bear the shame of his disappointment thyself.",
+        "valor": "Take him at thy side. He came to be a soldier, not a son."
+      }
+    },
+    "compassion-justice": {
+      "scene": "A starving thief is brought before thee. The law is clear: a hand for a loaf. Thou art the magistrate.",
+      "options": {
+        "compassion": "Pay for the loaf from thy own purse and send him home fed.",
+        "justice": "Pronounce the sentence the law demands."
+      }
+    },
+    "compassion-sacrifice": {
+      "scene": "A wounded stranger asks to travel with thee. Thy road is hard and thy provisions thin.",
+      "options": {
+        "compassion": "Walk with him. Share thy bread.",
+        "sacrifice": "Give him thy bread entire, and walk apart at thine own hunger."
+      }
+    },
+    "compassion-honor": {
+      "scene": "The man who killed thy brother lies at thy mercy, bleeding in the road. He begs for water.",
+      "options": {
+        "compassion": "Give him water. He is dying. That is enough.",
+        "honor": "Bind his wound and bear him to a physician, that he may stand for thy brother's judgment."
+      }
+    },
+    "compassion-spirituality": {
+      "scene": "A widow weeps at her husband's grave and asks thee whether the soul lives on. Thou knowest only what thou hast been taught.",
+      "options": {
+        "compassion": "Tell her that he watches her. Let her sleep tonight.",
+        "spirituality": "Tell her thou dost not know — and sit with her while she weeps."
+      }
+    },
+    "compassion-humility": {
+      "scene": "A poor woman has nothing to give but her last loaf. She presses it upon thee in thanks for what thou hast done.",
+      "options": {
+        "compassion": "Take the loaf and eat it before her, that she may know her gift is whole.",
+        "humility": "Refuse softly, and say her gift is too great for so small a deed."
+      }
+    },
+    "justice-valor": {
+      "scene": "A bandit who has terrorized the road begs for trial in the city, not the noose at the wayside.",
+      "options": {
+        "valor": "End it here. He is judged by his deeds.",
+        "justice": "Bind him and bring him to the city. Every man stands before a judge."
+      }
+    },
+    "sacrifice-valor": {
+      "scene": "Thy company flees a battle lost. Someone must hold the bridge while the rest cross. Thy captain looks at thee.",
+      "options": {
+        "valor": "Stand on the bridge with thy sword. Many shall remember thy stand.",
+        "sacrifice": "Volunteer before he asks. Let none know thy name when the song is sung."
+      }
+    },
+    "honor-valor": {
+      "scene": "A drunken oaf at the tavern slurs thy lady's name. Thy hand is on thy sword. The room watches.",
+      "options": {
+        "valor": "Draw. Make him answer for what he hath said.",
+        "honor": "Take his measure. A drunkard's tongue is no fit blade for thine. Walk past."
+      }
+    },
+    "spirituality-valor": {
+      "scene": "Thou hast vowed to walk the pilgrim's road unarmed. On the road, a child is set upon by a wolf — and a passing hunter is already drawing his bow.",
+      "options": {
+        "valor": "Break the vow. Take up a fallen branch and go to the child.",
+        "spirituality": "Trust the hunter to his shot. Kneel where thou art, and pray for the child."
+      }
+    },
+    "humility-valor": {
+      "scene": "At the tournament thou hast bested every comer save one. He is a friend, and the crowd waits.",
+      "options": {
+        "valor": "Strike thy best blow. He came to be tested, as didst thou.",
+        "humility": "Yield the field to him. Let the crown sit lighter than the friendship."
+      }
+    },
+    "justice-sacrifice": {
+      "scene": "A merchant owes a great debt to a man who cheated him long ago. The court will collect it if thou dost speak.",
+      "options": {
+        "justice": "Speak. The debt is owed. The law does not weigh old wrongs.",
+        "sacrifice": "Pay the debt thyself from thy own purse. Let neither man be wounded twice."
+      }
+    },
+    "honor-justice": {
+      "scene": "Thy lord hath ordered an unjust eviction. The peasants beg thee, his bailiff, to refuse.",
+      "options": {
+        "justice": "Refuse. The law is older than thy lord.",
+        "honor": "Carry out the order. Thy oath was sworn before any peasant knocked."
+      }
+    },
+    "justice-spirituality": {
+      "scene": "A wandering monk preaches a doctrine the council has named heresy. He is gentle, and clearly devout.",
+      "options": {
+        "justice": "Bring him before the council. The law has been spoken.",
+        "spirituality": "Walk with him a while. Listen. Then decide what is to be done."
+      }
+    },
+    "humility-justice": {
+      "scene": "A child has stolen an apple from thy cart. He cries before thee, ashamed.",
+      "options": {
+        "justice": "Demand the price of the apple in labor. The rule is the rule.",
+        "humility": "Give him the apple, and another for his sister. Pretend thou didst not see."
+      }
+    },
+    "honor-sacrifice": {
+      "scene": "Thy friend is held by a cruel lord. The price of his release is thy public confession to a crime thou didst not commit.",
+      "options": {
+        "sacrifice": "Confess. He will live.",
+        "honor": "Refuse. Thy name is not thine to spend, even for him."
+      }
+    },
+    "sacrifice-spirituality": {
+      "scene": "Thou art kept all night at a shrine in vigil. Outside, a beggar cries in the cold, and no other will rise.",
+      "options": {
+        "sacrifice": "Break the vigil and bring him in. Bear the priest's anger when dawn comes.",
+        "spirituality": "Hold the vigil. Pray for him by name through the long night."
+      }
+    },
+    "humility-sacrifice": {
+      "scene": "Thou hast given the last of thy harvest to feed thy village. The village wishes to crown thee its mayor.",
+      "options": {
+        "sacrifice": "Accept the burden. They will lean on thee in winter.",
+        "humility": "Refuse the crown. The grain was theirs first; thou didst only carry it."
+      }
+    },
+    "honor-spirituality": {
+      "scene": "Thou hast broken a vow. To confess is to lose thy knighthood; to seek another path is to keep thy peace privately.",
+      "options": {
+        "honor": "Confess publicly. The vow was made before others; so must its breaking be.",
+        "spirituality": "Go to the shrine alone. Make thy peace with the one who heard the vow first."
+      }
+    },
+    "honor-humility": {
+      "scene": "A young king hath wronged thee gravely and now stands before thee with bowed head, asking pardon in his court.",
+      "options": {
+        "honor": "Accept his apology formally, as becomes the gravity of his offense.",
+        "humility": "Kneel beside him. He is the wounded one now."
+      }
+    },
+    "humility-spirituality": {
+      "scene": "Thou hast received a vision the brothers would call a sign of high favor. To speak of it is to be made great among them.",
+      "options": {
+        "spirituality": "Tell them. The vision was given, not earned — but it was given to thee.",
+        "humility": "Tell no one. The vision was given that thou shouldst be quieter, not louder."
+      }
+    }
+  }
+}

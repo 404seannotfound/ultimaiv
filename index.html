@@ -1,0 +1,842 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>The Casting — ultimaiv</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=IM+Fell+English+SC&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --candle-amber: #f6c170;
+    --candle-glow: #c98a2b;
+    --deep-indigo: #1a1530;
+    --shadow: #0a0608;
+    --parchment: #efdfb3;
+    --parchment-dim: #cbb88a;
+    --ink: #2a1f10;
+    --bright-stone: #f3ebd0;
+    --dark-stone: #161214;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; overflow: hidden; }
+  body {
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    color: var(--parchment);
+    background: var(--shadow);
+    user-select: none;
+  }
+
+  /* --- Wagon background, full-bleed with vignette --- */
+  #stage {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    background:
+      radial-gradient(ellipse at 50% 60%, transparent 30%, rgba(0,0,0,0.55) 75%, rgba(0,0,0,0.85) 100%),
+      url('scenes/wagon_interior.jpeg') center 55% / cover no-repeat;
+  }
+
+  /* --- Abacus across the top --- */
+  #abacus {
+    position: absolute;
+    top: 2vh;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 1.4vw;
+    padding: 1.2vh 2vw;
+    background: linear-gradient(180deg, rgba(0,0,0,0.55), rgba(0,0,0,0.25));
+    border-radius: 999px;
+    border: 1px solid rgba(246,193,112,0.18);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+  }
+  .stone {
+    width: 2.4vh; height: 2.4vh;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 30%, #fff8dd 0%, var(--bright-stone) 40%, #b8a878 100%);
+    box-shadow: 0 0 14px var(--bright-stone), inset 0 -2px 4px rgba(0,0,0,0.3);
+    transition: all 600ms ease;
+    position: relative;
+  }
+  .stone[data-state="dark"] {
+    background: radial-gradient(circle at 35% 30%, #2a2428 0%, var(--dark-stone) 60%, #050308 100%);
+    box-shadow: inset 0 -1px 3px rgba(0,0,0,0.6), inset 0 1px 2px rgba(80,60,40,0.2);
+  }
+  .stone[data-state="active"] {
+    box-shadow: 0 0 22px var(--virtue-color, var(--bright-stone)), 0 0 6px #fff;
+    background: radial-gradient(circle at 35% 30%, #fff8dd 0%, var(--virtue-color, var(--bright-stone)) 70%, #6b5430 100%);
+  }
+  .stone-label {
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: 'IM Fell English SC', serif;
+    font-size: 0.85vh;
+    color: var(--parchment-dim);
+    white-space: nowrap;
+    opacity: 0.7;
+    text-transform: lowercase;
+    letter-spacing: 0.08em;
+  }
+
+  /* --- Cards-in-play, centered on the painted table --- */
+  #table-area {
+    position: absolute;
+    top: 18vh;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 4vw;
+    align-items: center;
+    justify-content: center;
+    height: 50vh;
+    perspective: 1500px;
+  }
+  .card-slot {
+    width: 22vh;
+    aspect-ratio: 2 / 3;
+    position: relative;
+    transform-style: preserve-3d;
+    transition: transform 900ms cubic-bezier(.2,.7,.2,1), opacity 700ms ease;
+    cursor: default;
+  }
+  .card-slot.flipped { transform: rotateY(180deg); }
+  .card-slot.discarded {
+    opacity: 0;
+    transform: rotateY(180deg) translateX(var(--discard-x, -30vw)) translateY(-10vh) rotate(-15deg) scale(0.7);
+    pointer-events: none;
+  }
+  .card-slot.selectable { cursor: pointer; }
+  .card-slot.selectable:hover { transform: rotateY(180deg) translateY(-1.5vh) scale(1.03); }
+  .card-face, .card-back-face {
+    position: absolute; inset: 0;
+    border-radius: 1.2vh;
+    background-size: cover; background-position: center;
+    box-shadow: 0 12px 36px rgba(0,0,0,0.6), 0 0 0 1px rgba(246,193,112,0.25);
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+  }
+  .card-back-face { background-image: url('scenes/card_back.jpeg'); }
+  .card-face { transform: rotateY(180deg); }
+
+  /* --- Final reveal card (full-screen) --- */
+  #reveal {
+    position: absolute; inset: 0;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    background: radial-gradient(ellipse at 50% 50%, rgba(20,12,30,0.85), rgba(0,0,0,0.97) 70%);
+    z-index: 10;
+    opacity: 0;
+    transition: opacity 1.6s ease;
+  }
+  #reveal.shown { display: flex; opacity: 1; }
+  #reveal-card {
+    width: 60vh;
+    aspect-ratio: 2 / 3;
+    background-size: cover;
+    background-position: center;
+    border-radius: 1.5vh;
+    box-shadow: 0 0 80px var(--virtue-color, #f6c170), 0 20px 60px rgba(0,0,0,0.8);
+    transform: scale(0.6);
+    opacity: 0;
+    transition: all 2.2s cubic-bezier(.2,.7,.2,1);
+  }
+  #reveal.shown #reveal-card { transform: scale(1); opacity: 1; }
+
+  /* --- Dialogue panel --- */
+  #dialogue {
+    position: absolute;
+    left: 50%;
+    bottom: 3vh;
+    transform: translateX(-50%);
+    width: min(82vw, 1100px);
+    padding: 2.4vh 3vw 2vh;
+    background:
+      linear-gradient(180deg, rgba(40,28,18,0.78), rgba(20,12,8,0.92)),
+      radial-gradient(circle at 20% 20%, rgba(246,193,112,0.08), transparent 50%);
+    border: 1px solid rgba(246,193,112,0.28);
+    border-radius: 1.2vh;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.7), inset 0 1px 0 rgba(246,193,112,0.1);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    display: flex;
+    flex-direction: column;
+    gap: 1.4vh;
+    z-index: 5;
+  }
+  #dialogue-header { display: flex; align-items: center; gap: 1.2vw; }
+  #gypsy-avatar {
+    width: 6vh; height: 6vh;
+    border-radius: 50%;
+    background-image: url('scenes/gypsy.jpeg');
+    background-size: 230% auto;
+    background-position: 50% 22%;
+    border: 2px solid rgba(246,193,112,0.5);
+    box-shadow: 0 0 16px rgba(246,193,112,0.3);
+    flex-shrink: 0;
+  }
+  #gypsy-name {
+    font-family: 'IM Fell English SC', serif;
+    font-size: 1.6vh;
+    letter-spacing: 0.14em;
+    color: var(--candle-amber);
+  }
+  #gypsy-speech {
+    font-style: italic;
+    font-size: 2.4vh;
+    line-height: 1.45;
+    color: var(--parchment);
+    min-height: 6vh;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.6);
+  }
+  #scene-text {
+    font-size: 2.1vh;
+    line-height: 1.45;
+    color: var(--parchment-dim);
+    padding-left: 1vw;
+    border-left: 2px solid rgba(246,193,112,0.4);
+    margin-left: 0.5vw;
+    min-height: 0;
+  }
+  #scene-text:empty { display: none; }
+  #choices {
+    display: flex;
+    gap: 2vw;
+    justify-content: stretch;
+    margin-top: 0.4vh;
+  }
+  .choice {
+    flex: 1;
+    padding: 1.6vh 1.5vw;
+    background: linear-gradient(180deg, rgba(60,40,20,0.55), rgba(20,12,6,0.75));
+    border: 1px solid rgba(246,193,112,0.35);
+    color: var(--parchment);
+    font-family: inherit;
+    font-size: 1.8vh;
+    line-height: 1.35;
+    border-radius: 0.8vh;
+    cursor: pointer;
+    transition: all 250ms ease;
+    text-align: left;
+  }
+  .choice:hover {
+    background: linear-gradient(180deg, rgba(120,80,40,0.7), rgba(60,30,15,0.85));
+    border-color: var(--candle-amber);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(0,0,0,0.5), 0 0 14px rgba(246,193,112,0.2);
+  }
+  .choice-virtue {
+    display: block;
+    font-family: 'IM Fell English SC', serif;
+    font-size: 1.3vh;
+    letter-spacing: 0.14em;
+    color: var(--candle-amber);
+    margin-bottom: 0.4vh;
+    opacity: 0.85;
+  }
+  .next-btn {
+    align-self: center;
+    padding: 1.4vh 4vw;
+    background: linear-gradient(180deg, rgba(120,80,40,0.6), rgba(60,30,15,0.8));
+    border: 1px solid rgba(246,193,112,0.5);
+    color: var(--candle-amber);
+    font-family: 'IM Fell English SC', serif;
+    font-size: 1.6vh;
+    letter-spacing: 0.2em;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: all 250ms ease;
+  }
+  .next-btn:hover {
+    background: linear-gradient(180deg, rgba(180,120,60,0.7), rgba(100,60,25,0.9));
+    box-shadow: 0 0 20px rgba(246,193,112,0.4);
+  }
+
+  /* --- Whisper, last beat --- */
+  #whisper {
+    position: absolute; inset: 0;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 11;
+    background: rgba(0,0,0,0.92);
+    opacity: 0;
+    transition: opacity 2.2s ease;
+  }
+  #whisper.shown { display: flex; opacity: 1; }
+  #whisper-text {
+    font-style: italic;
+    font-size: 3.2vh;
+    color: var(--parchment);
+    text-shadow: 0 0 24px var(--candle-amber);
+    text-align: center;
+    max-width: 60vw;
+    line-height: 1.5;
+    opacity: 0;
+    transition: opacity 2s ease;
+  }
+  #whisper.shown #whisper-text { opacity: 0.9; }
+
+  /* --- Permalink reveal at the very end --- */
+  #permalink-panel {
+    position: absolute;
+    bottom: 6vh; left: 50%;
+    transform: translateX(-50%);
+    z-index: 12;
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.4vh;
+    opacity: 0;
+    transition: opacity 2s ease;
+  }
+  #permalink-panel.shown { display: flex; opacity: 1; }
+  #permalink-text {
+    font-family: 'IM Fell English SC', serif;
+    color: var(--parchment-dim);
+    font-size: 1.6vh;
+    letter-spacing: 0.18em;
+  }
+  #permalink-url {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    color: var(--candle-amber);
+    font-size: 2.4vh;
+    text-decoration: underline;
+    text-decoration-color: rgba(246,193,112,0.4);
+  }
+  #replay {
+    margin-top: 1vh;
+    background: transparent;
+    border: 1px solid rgba(246,193,112,0.3);
+    color: var(--parchment-dim);
+    padding: 1vh 3vw;
+    font-family: 'IM Fell English SC', serif;
+    font-size: 1.3vh;
+    letter-spacing: 0.18em;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: all 200ms;
+  }
+  #replay:hover { border-color: var(--candle-amber); color: var(--candle-amber); }
+
+  /* --- Subtle candle flicker on the whole stage --- */
+  @keyframes flicker {
+    0%, 100% { filter: brightness(1); }
+    45%      { filter: brightness(1.04); }
+    50%      { filter: brightness(0.97); }
+    72%      { filter: brightness(1.03); }
+  }
+  #stage { animation: flicker 7.3s ease-in-out infinite; }
+
+  .fade-in { animation: fadein 1.4s ease forwards; }
+  @keyframes fadein { from {opacity: 0;} to {opacity: 1;} }
+
+  /* --- Intro overlay (satisfies browser autoplay gating) --- */
+  #intro {
+    position: absolute; inset: 0;
+    z-index: 20;
+    display: flex;
+    align-items: center; justify-content: center;
+    flex-direction: column;
+    gap: 3vh;
+    background: radial-gradient(ellipse at 50% 50%, rgba(20,12,30,0.6), rgba(0,0,0,0.92) 80%);
+    transition: opacity 1.6s ease;
+    cursor: pointer;
+  }
+  #intro.hidden { opacity: 0; pointer-events: none; }
+  #intro-title {
+    font-family: 'IM Fell English SC', serif;
+    font-size: 3.6vh;
+    letter-spacing: 0.3em;
+    color: var(--candle-amber);
+    text-shadow: 0 0 24px rgba(246,193,112,0.5);
+    text-align: center;
+  }
+  #intro-sub {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 2vh;
+    color: var(--parchment-dim);
+    max-width: 50vw;
+    text-align: center;
+    line-height: 1.45;
+  }
+  #intro-enter {
+    margin-top: 2vh;
+    padding: 1.6vh 4vw;
+    background: linear-gradient(180deg, rgba(120,80,40,0.6), rgba(60,30,15,0.8));
+    border: 1px solid rgba(246,193,112,0.5);
+    color: var(--candle-amber);
+    font-family: 'IM Fell English SC', serif;
+    font-size: 1.6vh;
+    letter-spacing: 0.22em;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: all 250ms;
+  }
+  #intro-enter:hover {
+    background: linear-gradient(180deg, rgba(180,120,60,0.7), rgba(100,60,25,0.9));
+    box-shadow: 0 0 20px rgba(246,193,112,0.4);
+  }
+</style>
+</head>
+<body>
+
+<div id="stage">
+
+  <div id="intro">
+    <div id="intro-title">THE CASTING</div>
+    <div id="intro-sub">A wagon stands at the edge of the fair. The wind has pushed thee toward its door.</div>
+    <button id="intro-enter">Enter the Wagon</button>
+  </div>
+
+  <div id="abacus" aria-label="abacus of virtues"></div>
+
+  <div id="table-area">
+    <div class="card-slot" id="card-left">
+      <div class="card-back-face"></div>
+      <div class="card-face"></div>
+    </div>
+    <div class="card-slot" id="card-right">
+      <div class="card-back-face"></div>
+      <div class="card-face"></div>
+    </div>
+  </div>
+
+  <div id="dialogue">
+    <div id="dialogue-header">
+      <div id="gypsy-avatar"></div>
+      <div id="gypsy-name">The Gypsy</div>
+    </div>
+    <div id="gypsy-speech">…</div>
+    <div id="scene-text"></div>
+    <div id="choices"></div>
+  </div>
+
+  <div id="reveal"><div id="reveal-card"></div></div>
+  <div id="whisper"><div id="whisper-text"></div></div>
+  <div id="permalink-panel">
+    <div id="permalink-text">thy reading</div>
+    <a id="permalink-url" href="#">/reading/—</a>
+    <button id="replay">Begin Again</button>
+  </div>
+
+</div>
+
+<script>
+/* ============================================================
+   ultimaiv — wagon-screen prototype
+   Single-file, double-clickable. Data inlined so file:// works.
+   When D1 lands we'll serve these from /api/* and the page
+   will fetch() instead of reading window.DATA.
+   ============================================================ */
+
+const DATA = {
+  script: /* INLINED FROM seed/script.json */ {
+    entry: "Come in. Sit. The wind sent thee, and the wind does not waste its breath.",
+    explanation: "Eight cards lie between us. Eight ways a soul may stand. I shall lay them in pairs. Thou must choose. Not which is true — both are true. Only which is thine.",
+    question_framing: "These two. Hear, and choose.",
+    after_answer: "So.",
+    round_1_to_2: "Four remain. The others are not lost — only set aside, for another to bear.",
+    round_2_to_final: "Two remain. Look at them. Breathe.",
+    before_final: "Now the last. Choose slowly. The card thou turnest down does not vanish — it will walk a step behind thee all thy days, as faithful as the one thou turnest up.",
+    whisper: "Find the king. He is looking for thee.",
+    closing: {
+      honesty:      "Honesty. Moonglow's lamps burn for thee tonight. Go and see the world clearly.",
+      compassion:   "Compassion. There is a wounded thing on the road to Britain. Find it before another does.",
+      valor:        "Valor. The isles of Jhelom have a place at the table. Sit there unflinching.",
+      justice:      "Justice. The yews of Yew lean toward thee already. Stand straight beneath them.",
+      sacrifice:    "Sacrifice. There is a forge in Minoc that has been cold too long. It waits for thy hand.",
+      honor:        "Honor. The gates of Trinsic open for those who kneel before they enter. Kneel.",
+      spirituality: "Spirituality. Skara Brae's mists know thy name already. Walk softly there.",
+      humility:     "Humility. New Magincia keeps no kings. Thou shalt be welcome."
+    }
+  },
+
+  virtues: /* INLINED FROM seed/virtues.json */ [
+    { id: "honesty",      class: "Mage",     mantra: "AHM",  stone: "blue",   color_hex: "#5fa8ff", card: "cards/v2/honesty.jpeg" },
+    { id: "compassion",   class: "Bard",     mantra: "MU",   stone: "yellow", color_hex: "#f6d65a", card: "cards/v2_fix/compassion.jpeg" },
+    { id: "valor",        class: "Fighter",  mantra: "RA",   stone: "red",    color_hex: "#e74646", card: "cards/v2/valor.jpeg" },
+    { id: "justice",      class: "Druid",    mantra: "BEH",  stone: "green",  color_hex: "#4dc278", card: "cards/v2/justice.jpeg" },
+    { id: "sacrifice",    class: "Tinker",   mantra: "CAH",  stone: "orange", color_hex: "#f2974a", card: "cards/v2/sacrifice.jpeg" },
+    { id: "honor",        class: "Paladin",  mantra: "SUMM", stone: "purple", color_hex: "#a878e6", card: "cards/v2_fix/honor.jpeg" },
+    { id: "spirituality", class: "Ranger",   mantra: "OM",   stone: "white",  color_hex: "#f3ebd0", card: "cards/v2/spirituality.jpeg" },
+    { id: "humility",     class: "Shepherd", mantra: "LUM",  stone: "black",  color_hex: "#888090", card: "cards/v2/humility.jpeg" }
+  ],
+
+  parables: /* INLINED FROM seed/parables.json */ {
+    "compassion-honesty": { scene: "Thou art a healer. The dying man clutches thy sleeve and asks if he shall see the morning. Thou knowest he will not.",
+      options: { honesty: "Tell him plainly, with thy hand upon his.", compassion: "Promise him morning, that he may sleep without fear." } },
+    "honesty-valor": { scene: "A captain of the guard hath fled an outnumbered fight, leaving his men. He asks thee in private if his honor stands.",
+      options: { honesty: "Say what is true: thou didst run.", valor: "Say nothing. Take up his sword thyself, that the next fight be answered." } },
+    "honesty-justice": { scene: "Thou art a witness at trial. The accused is plainly guilty, but only thou knowest a fact that would acquit him on a technicality.",
+      options: { honesty: "Tell every fact in thy keeping, and let the court decide.", justice: "Tell only what serves the just outcome thou knowest is right." } },
+    "honesty-sacrifice": { scene: "Soldiers come asking if thou hast seen the boy they hunt. He sleeps in thy cellar. He is innocent.",
+      options: { honesty: "Tell them what thou knowest. The truth is not thine to bend.", sacrifice: "Lie, and take whatever punishment falls when the lie is found." } },
+    "honesty-honor": { scene: "Thou hast given thy word to keep a friend's secret. Now a stranger asks the very question that secret would answer.",
+      options: { honesty: "Speak the secret, for thy word to truth is older than thy word to him.", honor: "Refuse to answer. A vow is a vow." } },
+    "honesty-spirituality": { scene: "Thou hast seen a vision at the shrine that thy mind cannot explain. The brothers ask: what didst thou see?",
+      options: { honesty: "Describe it as it came, however strange, and trust them to weigh it.", spirituality: "Hold the vision close. Some things are not meant for the mouths of others." } },
+    "honesty-humility": { scene: "A traveler praises thee for a deed thou didst perform. He believes thee a great hero.",
+      options: { honesty: "Tell him thy part, no more and no less. The deed was thine.", humility: "Say only that any would have done the same, and let his eyes turn elsewhere." } },
+    "compassion-valor": { scene: "A young soldier asks to ride with thee against a foe far beyond his strength. He will die if he comes.",
+      options: { compassion: "Send him home to his mother. Bear the shame of his disappointment thyself.", valor: "Take him at thy side. He came to be a soldier, not a son." } },
+    "compassion-justice": { scene: "A starving thief is brought before thee. The law is clear: a hand for a loaf. Thou art the magistrate.",
+      options: { compassion: "Pay for the loaf from thy own purse and send him home fed.", justice: "Pronounce the sentence the law demands." } },
+    "compassion-sacrifice": { scene: "A wounded stranger asks to travel with thee. Thy road is hard and thy provisions thin.",
+      options: { compassion: "Walk with him. Share thy bread.", sacrifice: "Give him thy bread entire, and walk apart at thine own hunger." } },
+    "compassion-honor": { scene: "The man who killed thy brother lies at thy mercy, bleeding in the road. He begs for water.",
+      options: { compassion: "Give him water. He is dying. That is enough.", honor: "Bind his wound and bear him to a physician, that he may stand for thy brother's judgment." } },
+    "compassion-spirituality": { scene: "A widow weeps at her husband's grave and asks thee whether the soul lives on. Thou knowest only what thou hast been taught.",
+      options: { compassion: "Tell her that he watches her. Let her sleep tonight.", spirituality: "Tell her thou dost not know — and sit with her while she weeps." } },
+    "compassion-humility": { scene: "A poor woman has nothing to give but her last loaf. She presses it upon thee in thanks for what thou hast done.",
+      options: { compassion: "Take the loaf and eat it before her, that she may know her gift is whole.", humility: "Refuse softly, and say her gift is too great for so small a deed." } },
+    "justice-valor": { scene: "A bandit who has terrorized the road begs for trial in the city, not the noose at the wayside.",
+      options: { valor: "End it here. He is judged by his deeds.", justice: "Bind him and bring him to the city. Every man stands before a judge." } },
+    "sacrifice-valor": { scene: "Thy company flees a battle lost. Someone must hold the bridge while the rest cross. Thy captain looks at thee.",
+      options: { valor: "Stand on the bridge with thy sword. Many shall remember thy stand.", sacrifice: "Volunteer before he asks. Let none know thy name when the song is sung." } },
+    "honor-valor": { scene: "A drunken oaf at the tavern slurs thy lady's name. Thy hand is on thy sword. The room watches.",
+      options: { valor: "Draw. Make him answer for what he hath said.", honor: "Take his measure. A drunkard's tongue is no fit blade for thine. Walk past." } },
+    "spirituality-valor": { scene: "Thou hast vowed to walk the pilgrim's road unarmed. On the road, a child is set upon by a wolf — and a passing hunter is already drawing his bow.",
+      options: { valor: "Break the vow. Take up a fallen branch and go to the child.", spirituality: "Trust the hunter to his shot. Kneel where thou art, and pray for the child." } },
+    "humility-valor": { scene: "At the tournament thou hast bested every comer save one. He is a friend, and the crowd waits.",
+      options: { valor: "Strike thy best blow. He came to be tested, as didst thou.", humility: "Yield the field to him. Let the crown sit lighter than the friendship." } },
+    "justice-sacrifice": { scene: "A merchant owes a great debt to a man who cheated him long ago. The court will collect it if thou dost speak.",
+      options: { justice: "Speak. The debt is owed. The law does not weigh old wrongs.", sacrifice: "Pay the debt thyself from thy own purse. Let neither man be wounded twice." } },
+    "honor-justice": { scene: "Thy lord hath ordered an unjust eviction. The peasants beg thee, his bailiff, to refuse.",
+      options: { justice: "Refuse. The law is older than thy lord.", honor: "Carry out the order. Thy oath was sworn before any peasant knocked." } },
+    "justice-spirituality": { scene: "A wandering monk preaches a doctrine the council has named heresy. He is gentle, and clearly devout.",
+      options: { justice: "Bring him before the council. The law has been spoken.", spirituality: "Walk with him a while. Listen. Then decide what is to be done." } },
+    "humility-justice": { scene: "A child has stolen an apple from thy cart. He cries before thee, ashamed.",
+      options: { justice: "Demand the price of the apple in labor. The rule is the rule.", humility: "Give him the apple, and another for his sister. Pretend thou didst not see." } },
+    "honor-sacrifice": { scene: "Thy friend is held by a cruel lord. The price of his release is thy public confession to a crime thou didst not commit.",
+      options: { sacrifice: "Confess. He will live.", honor: "Refuse. Thy name is not thine to spend, even for him." } },
+    "sacrifice-spirituality": { scene: "Thou art kept all night at a shrine in vigil. Outside, a beggar cries in the cold, and no other will rise.",
+      options: { sacrifice: "Break the vigil and bring him in. Bear the priest's anger when dawn comes.", spirituality: "Hold the vigil. Pray for him by name through the long night." } },
+    "humility-sacrifice": { scene: "Thou hast given the last of thy harvest to feed thy village. The village wishes to crown thee its mayor.",
+      options: { sacrifice: "Accept the burden. They will lean on thee in winter.", humility: "Refuse the crown. The grain was theirs first; thou didst only carry it." } },
+    "honor-spirituality": { scene: "Thou hast broken a vow. To confess is to lose thy knighthood; to seek another path is to keep thy peace privately.",
+      options: { honor: "Confess publicly. The vow was made before others; so must its breaking be.", spirituality: "Go to the shrine alone. Make thy peace with the one who heard the vow first." } },
+    "honor-humility": { scene: "A young king hath wronged thee gravely and now stands before thee with bowed head, asking pardon in his court.",
+      options: { honor: "Accept his apology formally, as becomes the gravity of his offense.", humility: "Kneel beside him. He is the wounded one now." } },
+    "humility-spirituality": { scene: "Thou hast received a vision the brothers would call a sign of high favor. To speak of it is to be made great among them.",
+      options: { spirituality: "Tell them. The vision was given, not earned — but it was given to thee.", humility: "Tell no one. The vision was given that thou shouldst be quieter, not louder." } }
+  }
+};
+
+/* --- helpers --- */
+const $ = sel => document.querySelector(sel);
+const $$ = sel => Array.from(document.querySelectorAll(sel));
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+const V = Object.fromEntries(DATA.virtues.map(v => [v.id, v]));
+const pairKey = (a, b) => [a, b].sort().join('-');
+const shuffle = arr => {
+  const a = arr.slice();
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+};
+const shortId = () => Math.random().toString(36).slice(2, 8);
+
+/* --- abacus render --- */
+function renderAbacus(currentPair = []) {
+  const a = $('#abacus');
+  a.innerHTML = '';
+  for (const v of DATA.virtues) {
+    const s = document.createElement('div');
+    s.className = 'stone';
+    s.style.setProperty('--virtue-color', v.color_hex);
+    if (STATE.eliminated.has(v.id)) s.dataset.state = 'dark';
+    else if (currentPair.includes(v.id)) s.dataset.state = 'active';
+    const label = document.createElement('div');
+    label.className = 'stone-label';
+    label.textContent = v.id;
+    s.appendChild(label);
+    a.appendChild(s);
+  }
+}
+
+/* --- card render --- */
+function setCardArt(slotEl, virtueId) {
+  const face = slotEl.querySelector('.card-face');
+  face.style.backgroundImage = virtueId ? `url('${V[virtueId].card}')` : 'none';
+  slotEl.dataset.virtue = virtueId || '';
+}
+function resetCards() {
+  ['#card-left', '#card-right'].forEach(sel => {
+    const el = $(sel);
+    el.classList.remove('flipped', 'discarded', 'selectable');
+    el.style.removeProperty('--discard-x');
+    setCardArt(el, null);
+  });
+}
+
+/* --- audio (Gypsy voice) --- */
+let currentAudio = null;
+function playGypsyAudio(audioKey) {
+  if (!audioKey) return;
+  if (currentAudio) { try { currentAudio.pause(); } catch (e) {} currentAudio = null; }
+  const a = new Audio(`audio/gypsy/${audioKey}.mp3`);
+  a.volume = 0.95;
+  // Browsers may still reject autoplay if the user never interacted; we swallow that.
+  a.play().catch(() => {});
+  currentAudio = a;
+}
+
+/* --- dialogue --- */
+async function gypsySpeaks(text, audioKey) {
+  const el = $('#gypsy-speech');
+  el.classList.remove('fade-in');
+  void el.offsetWidth;
+  el.textContent = text;
+  el.classList.add('fade-in');
+  if (audioKey) playGypsyAudio(audioKey);
+}
+function setScene(text) {
+  $('#scene-text').textContent = text || '';
+}
+function clearChoices() { $('#choices').innerHTML = ''; }
+function nextButton(label, onClick) {
+  clearChoices();
+  const b = document.createElement('button');
+  b.className = 'next-btn';
+  b.textContent = label;
+  b.addEventListener('click', () => { b.disabled = true; onClick(); });
+  $('#choices').appendChild(b);
+}
+
+/* ============================================================
+   The Casting — state machine
+   ============================================================ */
+
+const STATE = {
+  roundPool: [],     // virtues being weighed THIS round — fixed for the round, indexed by questionInRound
+  nextRound: [],     // winners accumulating for next round
+  eliminated: new Set(),  // virtues knocked out so far this session — drives abacus dim state
+  round: 1,
+  questionInRound: 0,
+  totalQuestion: 0,
+  history: [],       // { round, q, a, b, chose }
+  sessionId: shortId()
+};
+
+function startCasting() {
+  STATE.roundPool = shuffle(DATA.virtues.map(v => v.id));
+  STATE.nextRound = [];
+  STATE.eliminated = new Set();
+  STATE.round = 1;
+  STATE.questionInRound = 0;
+  STATE.totalQuestion = 0;
+  STATE.history = [];
+  STATE.sessionId = shortId();
+  renderAbacus();
+  resetCards();
+  $('#reveal').classList.remove('shown');
+  $('#whisper').classList.remove('shown');
+  $('#permalink-panel').classList.remove('shown');
+  beginGreeting();
+}
+
+async function beginGreeting() {
+  await gypsySpeaks(DATA.script.entry, 'entry');
+  nextButton('Listen', async () => {
+    await gypsySpeaks(DATA.script.explanation, 'explanation');
+    nextButton('Begin', () => nextQuestion());
+  });
+}
+
+async function nextQuestion() {
+  // Pair the next two from this round's fixed pool.
+  const a = STATE.roundPool[STATE.questionInRound * 2];
+  const b = STATE.roundPool[STATE.questionInRound * 2 + 1];
+  if (!a || !b) { return advanceRound(); }
+
+  STATE.totalQuestion++;
+  const isFinal = (STATE.round === 3);
+  const framing = isFinal ? DATA.script.before_final : DATA.script.question_framing;
+  const framingKey = isFinal ? 'before_final' : 'question_framing';
+
+  await gypsySpeaks(framing, framingKey);
+  setScene('');
+  clearChoices();
+  renderAbacus([a, b]);
+  await sleep(600);
+
+  // Lay the two cards face-down.
+  resetCards();
+  setCardArt($('#card-left'),  a);
+  setCardArt($('#card-right'), b);
+  await sleep(700);
+  // Flip them.
+  $('#card-left').classList.add('flipped');
+  await sleep(300);
+  $('#card-right').classList.add('flipped');
+  await sleep(900);
+
+  // Show the parable.
+  const parable = DATA.parables[pairKey(a, b)] || {
+    scene: `Thou must weigh ${a} against ${b}. Which calls to thee?`,
+    options: { [a]: `Choose ${a}.`, [b]: `Choose ${b}.` }
+  };
+  setScene(parable.scene);
+  presentChoices(a, b, parable);
+}
+
+function presentChoices(a, b, parable) {
+  clearChoices();
+  $('#card-left').classList.add('selectable');
+  $('#card-right').classList.add('selectable');
+
+  for (const id of [a, b]) {
+    const btn = document.createElement('button');
+    btn.className = 'choice';
+    btn.innerHTML = `<span class="choice-virtue">${id.toUpperCase()} — ${V[id].class}</span>${parable.options[id]}`;
+    btn.addEventListener('click', () => recordAnswer(a, b, id));
+    $('#choices').appendChild(btn);
+  }
+  // Also allow clicking the card itself as the same answer.
+  $('#card-left').onclick  = () => recordAnswer(a, b, a);
+  $('#card-right').onclick = () => recordAnswer(a, b, b);
+}
+
+async function recordAnswer(a, b, chose) {
+  // Lock the UI.
+  $('#card-left').onclick = $('#card-right').onclick = null;
+  $('#card-left').classList.remove('selectable');
+  $('#card-right').classList.remove('selectable');
+  clearChoices();
+
+  const dropped = (chose === a) ? b : a;
+  STATE.history.push({ round: STATE.round, q: STATE.totalQuestion, a, b, chose });
+  STATE.nextRound.push(chose);
+  STATE.eliminated.add(dropped);
+
+  // Discard the rejected card with a slide.
+  const rejectedSlot = (dropped === a) ? '#card-left' : '#card-right';
+  const dir = (dropped === a) ? -1 : 1;
+  $(rejectedSlot).style.setProperty('--discard-x', `${dir * 30}vw`);
+  $(rejectedSlot).classList.add('discarded');
+
+  // Darken the dropped virtue's stone; keep winner lit.
+  await sleep(600);
+  renderAbacus([chose]);
+
+  await gypsySpeaks(DATA.script.after_answer, 'after_answer');
+  setScene('');
+  await sleep(1200);
+
+  STATE.questionInRound++;
+  const pairsThisRound = { 1: 4, 2: 2, 3: 1 }[STATE.round];
+  if (STATE.questionInRound < pairsThisRound) {
+    nextQuestion();
+  } else {
+    advanceRound();
+  }
+}
+
+async function advanceRound() {
+  STATE.roundPool = STATE.nextRound;
+  STATE.nextRound = [];
+  STATE.questionInRound = 0;
+
+  if (STATE.round === 1) {
+    STATE.round = 2;
+    await gypsySpeaks(DATA.script.round_1_to_2, 'round_1_to_2');
+    nextButton('Continue', () => {
+      // Reshuffle the 4 winners so the bracket isn't deterministic by entry order.
+      STATE.roundPool = shuffle(STATE.roundPool);
+      renderAbacus();
+      nextQuestion();
+    });
+  } else if (STATE.round === 2) {
+    STATE.round = 3;
+    await gypsySpeaks(DATA.script.round_2_to_final, 'round_2_to_final');
+    nextButton('Continue', () => {
+      renderAbacus();
+      nextQuestion();
+    });
+  } else {
+    revealFinalCard();
+  }
+}
+
+async function revealFinalCard() {
+  const winner = STATE.roundPool[0];
+  const v = V[winner];
+
+  // Hide the in-table cards.
+  $('#card-left').classList.add('discarded');
+  $('#card-right').classList.add('discarded');
+  setScene('');
+  clearChoices();
+  renderAbacus([winner]);
+
+  // Bring up the full-screen reveal card.
+  const reveal = $('#reveal');
+  $('#reveal-card').style.backgroundImage = `url('${v.card}')`;
+  $('#reveal-card').style.setProperty('--virtue-color', v.color_hex);
+  reveal.classList.add('shown');
+
+  await sleep(2400);
+  await gypsySpeaks(DATA.script.closing[winner], `closing_${winner}`);
+
+  // Move dialogue forward a beat for the whisper.
+  nextButton('…', () => beginWhisper(winner));
+}
+
+async function beginWhisper(winner) {
+  $('#reveal').classList.remove('shown');
+  $('#dialogue').style.opacity = 0;
+  const w = $('#whisper');
+  $('#whisper-text').textContent = DATA.script.whisper;
+  w.classList.add('shown');
+  playGypsyAudio('whisper');
+  await sleep(4500);
+  showPermalink(winner);
+}
+
+async function showPermalink(winner) {
+  $('#whisper').classList.remove('shown');
+  await sleep(2000);
+  $('#dialogue').style.opacity = 1;
+  $('#dialogue').style.display = 'none';
+
+  const url = `/reading/${winner}-${STATE.sessionId}`;
+  $('#permalink-url').textContent = url;
+  $('#permalink-url').href = url;
+  $('#permalink-panel').classList.add('shown');
+
+  $('#replay').onclick = () => {
+    $('#dialogue').style.display = '';
+    $('#dialogue').style.opacity = 1;
+    startCasting();
+  };
+}
+
+/* --- kick off: intro screen waits for a user gesture before audio --- */
+window.addEventListener('DOMContentLoaded', () => {
+  // Prefetch the entry audio so it starts cleanly on first click.
+  const prefetch = new Audio('audio/gypsy/entry.mp3');
+  prefetch.preload = 'auto';
+
+  const enter = () => {
+    $('#intro').classList.add('hidden');
+    // Tiny no-op play to "unlock" audio context after the user gesture.
+    prefetch.play().then(() => prefetch.pause()).catch(() => {});
+    setTimeout(startCasting, 800);
+  };
+  $('#intro-enter').addEventListener('click', enter);
+  $('#intro').addEventListener('click', e => { if (e.target.id === 'intro') enter(); });
+});
+</script>
+</body>
+</html>

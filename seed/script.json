@@ -1,0 +1,21 @@
+{
+  "_comment": "Locked Gypsy script — candidate A throughout + per-virtue closings enabled. Source of truth for both the prototype HTML and the future D1 seed.",
+  "entry": "Come in. Sit. The wind sent thee, and the wind does not waste its breath.",
+  "explanation": "Eight cards lie between us. Eight ways a soul may stand. I shall lay them in pairs. Thou must choose. Not which is true — both are true. Only which is thine.",
+  "question_framing": "These two. Hear, and choose.",
+  "after_answer": "So.",
+  "round_1_to_2": "Four remain. The others are not lost — only set aside, for another to bear.",
+  "round_2_to_final": "Two remain. Look at them. Breathe.",
+  "before_final": "Now the last. Choose slowly. The card thou turnest down does not vanish — it will walk a step behind thee all thy days, as faithful as the one thou turnest up.",
+  "whisper": "Find the king. He is looking for thee.",
+  "closing": {
+    "honesty":      "Honesty. Moonglow's lamps burn for thee tonight. Go and see the world clearly.",
+    "compassion":   "Compassion. There is a wounded thing on the road to Britain. Find it before another does.",
+    "valor":        "Valor. The isles of Jhelom have a place at the table. Sit there unflinching.",
+    "justice":      "Justice. The yews of Yew lean toward thee already. Stand straight beneath them.",
+    "sacrifice":    "Sacrifice. There is a forge in Minoc that has been cold too long. It waits for thy hand.",
+    "honor":        "Honor. The gates of Trinsic open for those who kneel before they enter. Kneel.",
+    "spirituality": "Spirituality. Skara Brae's mists know thy name already. Walk softly there.",
+    "humility":     "Humility. New Magincia keeps no kings. Thou shalt be welcome."
+  }
+}

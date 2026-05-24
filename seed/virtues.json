@@ -1,0 +1,13 @@
+{
+  "_comment": "Canonical Ultima IV virtue bundle. Card art lives in cards/v2/ (with v2_fix/ overrides for honor + compassion).",
+  "virtues": [
+    { "id": "honesty",      "principles": ["truth"],                          "class": "Mage",     "mantra": "AHM",  "stone": "blue",    "town": "Moonglow",     "symbol": "open hand",          "card": "cards/v2/honesty.jpeg",                "color_hex": "#1a3a6e" },
+    { "id": "compassion",   "principles": ["love"],                           "class": "Bard",     "mantra": "MU",   "stone": "yellow",  "town": "Britain",      "symbol": "heart in roses",     "card": "cards/v2_fix/compassion.jpeg",         "color_hex": "#c6a14a" },
+    { "id": "valor",        "principles": ["courage"],                        "class": "Fighter",  "mantra": "RA",   "stone": "red",     "town": "Jhelom",       "symbol": "upraised sword",     "card": "cards/v2/valor.jpeg",                  "color_hex": "#8a1818" },
+    { "id": "justice",      "principles": ["truth", "love"],                  "class": "Druid",    "mantra": "BEH",  "stone": "green",   "town": "Yew",          "symbol": "balanced scales",    "card": "cards/v2/justice.jpeg",                "color_hex": "#235c3a" },
+    { "id": "sacrifice",    "principles": ["love", "courage"],                "class": "Tinker",   "mantra": "CAH",  "stone": "orange",  "town": "Minoc",        "symbol": "falling tear",       "card": "cards/v2/sacrifice.jpeg",              "color_hex": "#a8541a" },
+    { "id": "honor",        "principles": ["courage", "truth"],               "class": "Paladin",  "mantra": "SUMM", "stone": "purple",  "town": "Trinsic",      "symbol": "golden chalice",     "card": "cards/v2_fix/honor.jpeg",              "color_hex": "#4a2a6e" },
+    { "id": "spirituality", "principles": ["truth", "love", "courage"],       "class": "Ranger",   "mantra": "OM",   "stone": "white",   "town": "Skara Brae",   "symbol": "luminous ankh",      "card": "cards/v2/spirituality.jpeg",           "color_hex": "#cdd2d6" },
+    { "id": "humility",     "principles": [],                                 "class": "Shepherd", "mantra": "LUM",  "stone": "black",   "town": "New Magincia", "symbol": "shepherd's staff",   "card": "cards/v2/humility.jpeg",               "color_hex": "#1a1a22" }
+  ]
+}
