@@ -112,7 +112,51 @@ Requires `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID`, and
 `PAGES_PROJECT` in `.env`. The token needs `Cloudflare Pages → Edit`
 permission for the account. The script stages `dist/`, copies
 `index.html` to `dist/cards/index.html` (so `/cards/` works alongside the
-existing `cards/` image directory), then runs `wrangler pages deploy`.
+existing `cards/` image directory), copies `functions/` into `dist/` for
+the Discord Pages Function, then runs `wrangler pages deploy`.
+
+## Discord `/cast` slash command
+
+A Pages Function at `/api/discord/interactions` powers a `/cast` slash
+command that draws a single virtue from the deck and posts it as a rich
+embed (random by default, or `/cast virtue: <name>` for a specific pull).
+
+### One-time setup
+
+1. **Create the app:** <https://discord.com/developers/applications> →
+   New Application → name it. Copy the **Application ID** and the
+   **Public Key** from the General Information page.
+2. **Make a bot:** Bot tab → **Reset Token** → copy the bot token.
+3. **Fill `.env`:** set `DISCORD_APPLICATION_ID`, `DISCORD_PUBLIC_KEY`,
+   `DISCORD_BOT_TOKEN`.
+4. **Set the public key as a Pages secret** (the Function reads it at
+   runtime):
+   ```sh
+   wrangler pages secret put DISCORD_PUBLIC_KEY --project-name ultimaiv
+   ```
+5. **Register the slash command:**
+   ```sh
+   node scripts/register-discord-commands.mjs
+   ```
+6. **Deploy:** `./scripts/deploy.sh`
+7. **Wire the endpoint:** back in the Discord dev portal → General
+   Information → set **Interactions Endpoint URL** to
+   `https://ultimaiv.pages.dev/api/discord/interactions` and save. Discord
+   sends a PING; the Function PONGs and the URL is accepted.
+8. **Install:** Installation tab → enable both *Guild Install* and *User
+   Install* → copy the install URL and visit it. Add to a server, or
+   install as a user app so `/cast` works in any DM.
+
+### Try it
+
+```
+/cast                           # random virtue
+/cast virtue: humility          # specific pull
+```
+
+The embed renders the card thumbnail, mantra, town/class/companion line,
+the prose description, and two cultivation suggestions in the virtue's
+stone color.
 
 ## Canonical Britannian bundle
 

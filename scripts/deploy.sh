@@ -21,16 +21,17 @@ set -a; source .env; set +a
 DIST="dist"
 rm -rf "$DIST"
 mkdir -p "$DIST"
-cp index.html  "$DIST/"
-cp _redirects  "$DIST/"
-cp -R cards    "$DIST/"
-cp -R scenes   "$DIST/"
-cp -R audio    "$DIST/"
-cp -R devlog   "$DIST/"
+cp index.html   "$DIST/"
+cp _redirects   "$DIST/"
+cp -R cards     "$DIST/"
+cp -R scenes    "$DIST/"
+cp -R audio     "$DIST/"
+cp -R devlog    "$DIST/"
+cp -R functions "$DIST/"     # Pages Functions (Discord /cast endpoint)
 
 # /cards path needs its own index.html because the assets live under cards/.
 # Without this Pages serves a directory listing (or 308s to /).
-cp index.html  "$DIST/cards/index.html"
+cp index.html   "$DIST/cards/index.html"
 
 dist_size=$(du -sh "$DIST" | awk '{print $1}')
 echo "staged $DIST/ (size: $dist_size)"
