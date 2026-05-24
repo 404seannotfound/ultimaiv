@@ -21,10 +21,11 @@ set -a; source .env; set +a
 DIST="dist"
 rm -rf "$DIST"
 mkdir -p "$DIST"
-cp index.html "$DIST/"
-cp -R cards   "$DIST/"
-cp -R scenes  "$DIST/"
-cp -R audio   "$DIST/"
+cp index.html  "$DIST/"
+cp _redirects  "$DIST/"
+cp -R cards    "$DIST/"
+cp -R scenes   "$DIST/"
+cp -R audio    "$DIST/"
 
 dist_size=$(du -sh "$DIST" | awk '{print $1}')
 echo "staged $DIST/ (size: $dist_size)"

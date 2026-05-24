@@ -1,0 +1,3 @@
+# Cloudflare Pages — serve index.html for /cards so the browser sees the path
+# without a separate file. 200 = serve-in-place (no redirect, URL preserved).
+/cards   /index.html   200

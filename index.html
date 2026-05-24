@@ -385,6 +385,168 @@
     background: linear-gradient(180deg, rgba(180,120,60,0.7), rgba(100,60,25,0.9));
     box-shadow: 0 0 20px rgba(246,193,112,0.4);
   }
+
+  /* --- Card Browser (also serves /cards) --- */
+  #card-browser {
+    position: fixed; inset: 0;
+    z-index: 30;
+    display: none;
+    background:
+      radial-gradient(ellipse at 50% 50%, rgba(20,12,30,0.55) 0%, rgba(0,0,0,0.96) 78%),
+      url('scenes/wagon_interior.jpeg') center 55% / cover no-repeat;
+    opacity: 0;
+    transition: opacity 1.0s ease;
+  }
+  #card-browser.cb-shown { display: flex; opacity: 1; }
+  .cb-stage {
+    flex: 1;
+    display: grid;
+    grid-template-columns: 1fr 1.05fr;
+    gap: 4vw;
+    align-items: center;
+    padding: 6vh 6vw 10vh;
+    max-width: 1500px;
+    margin: 0 auto;
+  }
+  @media (max-width: 720px) {
+    .cb-stage { grid-template-columns: 1fr; padding: 8vh 6vw 14vh; gap: 3vh; overflow-y: auto; }
+    .cb-card { max-width: 38vh; justify-self: center; }
+    .cb-info { max-width: 90vw; }
+    .cb-virtue { font-size: 4.2vh; }
+  }
+  .cb-stage { overflow-y: auto; }
+  .cb-card {
+    width: 100%;
+    max-width: 46vh;
+    justify-self: end;
+    aspect-ratio: 2 / 3;
+    border-radius: 1.5vh;
+    background-size: cover; background-position: center;
+    box-shadow: 0 0 60px var(--cb-glow, rgba(246,193,112,0.35)), 0 24px 60px rgba(0,0,0,0.7);
+    transform-origin: center;
+    transition: opacity 380ms ease, transform 380ms ease, box-shadow 600ms ease;
+  }
+  .cb-card.fade { opacity: 0; transform: scale(0.97); }
+  .cb-info {
+    color: var(--parchment);
+    max-width: 56ch;
+    align-self: center;
+  }
+  .cb-mantra {
+    font-family: 'IM Fell English SC', serif;
+    font-size: 2.2vh;
+    letter-spacing: 0.5em;
+    color: var(--cb-glow, var(--candle-amber));
+    margin-bottom: 0.8vh;
+    text-shadow: 0 0 18px rgba(246,193,112,0.3);
+  }
+  .cb-virtue {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 500;
+    font-size: 6vh;
+    line-height: 1;
+    margin: 0 0 1.6vh;
+    color: var(--parchment);
+    letter-spacing: 0.02em;
+  }
+  .cb-meta {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 2vh;
+    color: var(--parchment-dim);
+    margin-bottom: 2.4vh;
+    border-bottom: 1px solid rgba(246,193,112,0.18);
+    padding-bottom: 2vh;
+    line-height: 1.5;
+  }
+  .cb-meta span { display: inline-block; margin-right: 1.4vw; white-space: nowrap; }
+  .cb-meta b {
+    font-family: 'IM Fell English SC', serif;
+    font-style: normal;
+    font-weight: normal;
+    color: var(--candle-amber);
+    letter-spacing: 0.12em;
+    margin-right: 0.4vw;
+    font-size: 1.5vh;
+    text-transform: lowercase;
+  }
+  .cb-desc {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2.2vh;
+    line-height: 1.55;
+    color: var(--parchment);
+  }
+  .cb-nav {
+    position: absolute;
+    top: 50%; transform: translateY(-50%);
+    background: rgba(0,0,0,0.45);
+    border: 1px solid rgba(246,193,112,0.3);
+    color: var(--candle-amber);
+    width: 6vh; height: 6vh;
+    border-radius: 50%;
+    font-size: 3.2vh;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 200ms ease;
+    line-height: 0;
+  }
+  .cb-nav:hover { background: rgba(40,28,18,0.85); border-color: var(--candle-amber); box-shadow: 0 0 16px rgba(246,193,112,0.4); }
+  .cb-prev { left: 2vw; }
+  .cb-next { right: 2vw; }
+  .cb-close {
+    position: absolute;
+    top: 2.4vh; right: 2.4vw;
+    background: transparent;
+    border: none;
+    color: var(--parchment-dim);
+    font-size: 4vh;
+    cursor: pointer;
+    line-height: 1;
+    transition: color 180ms;
+    padding: 0.4vh 1.2vw;
+  }
+  .cb-close:hover { color: var(--candle-amber); }
+  .cb-dots {
+    position: absolute;
+    bottom: 3.6vh;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 1.4vh;
+    padding: 1.2vh 2vw;
+    background: rgba(0,0,0,0.4);
+    border-radius: 999px;
+    border: 1px solid rgba(246,193,112,0.18);
+  }
+  .cb-dot {
+    width: 1.4vh; height: 1.4vh;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.18);
+    cursor: pointer;
+    transition: all 200ms;
+  }
+  .cb-dot:hover { background: rgba(255,255,255,0.4); }
+  .cb-dot.current {
+    background: var(--cb-glow, var(--candle-amber));
+    box-shadow: 0 0 12px var(--cb-glow, var(--candle-amber));
+    transform: scale(1.4);
+  }
+
+  /* "View the deck" pill on the permalink panel */
+  #view-deck {
+    background: transparent;
+    border: 1px solid rgba(246,193,112,0.35);
+    color: var(--candle-amber);
+    padding: 1vh 3vw;
+    font-family: 'IM Fell English SC', serif;
+    font-size: 1.3vh;
+    letter-spacing: 0.18em;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: all 200ms;
+    margin-top: 0.4vh;
+  }
+  #view-deck:hover { background: rgba(40,28,18,0.6); box-shadow: 0 0 16px rgba(246,193,112,0.3); }
 </style>
 </head>
 <body>
@@ -425,7 +587,24 @@
   <div id="permalink-panel">
     <div id="permalink-text">thy reading</div>
     <a id="permalink-url" href="#">/reading/—</a>
+    <button id="view-deck">Flip Through the Deck</button>
     <button id="replay">Begin Again</button>
+  </div>
+
+  <div id="card-browser" aria-hidden="true">
+    <button class="cb-close" id="cb-close" aria-label="close">×</button>
+    <button class="cb-nav cb-prev" id="cb-prev" aria-label="previous card">‹</button>
+    <button class="cb-nav cb-next" id="cb-next" aria-label="next card">›</button>
+    <div class="cb-stage">
+      <div class="cb-card" id="cb-card"></div>
+      <div class="cb-info">
+        <div class="cb-mantra" id="cb-mantra">AHM</div>
+        <h2 class="cb-virtue" id="cb-virtue">Honesty</h2>
+        <div class="cb-meta" id="cb-meta"></div>
+        <p class="cb-desc" id="cb-desc"></p>
+      </div>
+    </div>
+    <div class="cb-dots" id="cb-dots"></div>
   </div>
 
 </div>
@@ -460,15 +639,23 @@ const DATA = {
     }
   },
 
-  virtues: /* INLINED FROM seed/virtues.json */ [
-    { id: "honesty",      class: "Mage",     mantra: "AHM",  stone: "blue",   color_hex: "#5fa8ff", card: "cards/v2/honesty.jpeg" },
-    { id: "compassion",   class: "Bard",     mantra: "MU",   stone: "yellow", color_hex: "#f6d65a", card: "cards/v2_fix/compassion.jpeg" },
-    { id: "valor",        class: "Fighter",  mantra: "RA",   stone: "red",    color_hex: "#e74646", card: "cards/v2/valor.jpeg" },
-    { id: "justice",      class: "Druid",    mantra: "BEH",  stone: "green",  color_hex: "#4dc278", card: "cards/v2/justice.jpeg" },
-    { id: "sacrifice",    class: "Tinker",   mantra: "CAH",  stone: "orange", color_hex: "#f2974a", card: "cards/v2/sacrifice.jpeg" },
-    { id: "honor",        class: "Paladin",  mantra: "SUMM", stone: "purple", color_hex: "#a878e6", card: "cards/v2_fix/honor.jpeg" },
-    { id: "spirituality", class: "Ranger",   mantra: "OM",   stone: "white",  color_hex: "#f3ebd0", card: "cards/v2/spirituality.jpeg" },
-    { id: "humility",     class: "Shepherd", mantra: "LUM",  stone: "black",  color_hex: "#888090", card: "cards/v2/humility.jpeg" }
+  virtues: /* INLINED FROM seed/virtues.json + descriptions */ [
+    { id: "honesty",      class: "Mage",     mantra: "AHM",  stone: "sapphire",       color_hex: "#5fa8ff", town: "Moonglow",     principles: "Truth",                          companion: "Mariah",  card: "cards/v2/honesty.jpeg",
+      description: "The first and clearest of the virtues — the practice of speaking and acting in accord with what one knows. In Britannia, Honesty is taught at the Lycaeum on the island of Moonglow, where scholars catalogue the laws of nature beneath the twin moons. Its companion is Mariah the Mage, who reads the world through the patience of her books. Where Honesty is absent, magic itself falls silent — for the spell calls upon the world as it truly is." },
+    { id: "compassion",   class: "Bard",     mantra: "MU",   stone: "yellow",         color_hex: "#f6d65a", town: "Britain",      principles: "Love",                           companion: "Iolo",    card: "cards/v2_fix/compassion.jpeg",
+      description: "The practice of moving toward another's suffering rather than away. Compassion's town is Britain itself, the seat of Lord British's mercy and the great walled city at the kingdom's heart. Its companion is Iolo the Bard, whose lute reaches a wound before his hands do. Where Compassion fails, the world has fewer arms to lift the fallen, and a song that should have soothed turns into noise." },
+    { id: "valor",        class: "Fighter",  mantra: "RA",   stone: "red",            color_hex: "#e74646", town: "Jhelom",       principles: "Courage",                        companion: "Geoffrey",card: "cards/v2/valor.jpeg",
+      description: "The willingness to act in the face of cost. Valor's home is Jhelom, the warrior isles where children are taught the sword before the alphabet. Its stone is the red of a heart at full pour. Its companion is Geoffrey the Fighter, who has never asked whether a thing is wise, only whether it is owed. To live without Valor is to live in a smaller circle of the possible, where every door is closed because no one would knock." },
+    { id: "justice",      class: "Druid",    mantra: "BEH",  stone: "emerald",        color_hex: "#4dc278", town: "Yew",          principles: "Truth + Love",                   companion: "Jaana",   card: "cards/v2/justice.jpeg",
+      description: "The slow balancing of one good against another. Justice sits in Yew, where the courts of judgment hold beneath ancient evergreens older than the kingdom. It combines Truth and Love — the cool sight of what is, met by the warm wish for what should be. Its companion is Jaana the Druid, who listens longer than anyone else before she rules. Without Justice, mercy unmoored drifts into favor, and the law becomes only a fence around the powerful." },
+    { id: "sacrifice",    class: "Tinker",   mantra: "CAH",  stone: "amber",          color_hex: "#f2974a", town: "Minoc",        principles: "Love + Courage",                 companion: "Julia",   card: "cards/v2/sacrifice.jpeg",
+      description: "The willingness to give what one has — time, hope, body, name — for another's good. Sacrifice's home is Minoc, the northern craft-town where every offering is forged in fire. Its stone is the orange of glowing embers, of a thing being shaped and a thing being lost. Its companion is Julia the Tinker, who builds and rebuilds with the same patient hands. Without Sacrifice, love is only sentiment, a word that holds no weight when carried." },
+    { id: "honor",        class: "Paladin",  mantra: "SUMM", stone: "amethyst",       color_hex: "#a878e6", town: "Trinsic",      principles: "Courage + Truth",                companion: "Dupre",   card: "cards/v2_fix/honor.jpeg",
+      description: "The keeping of one's word and one's measure even when no one is watching. Honor stands in Trinsic, the walled paladin city whose golden gates open only to those who bow before they enter. It combines Courage and Truth — the courage to act, the truth to which one is bound. Its companion is Dupre the Paladin, whose word stands when his sword breaks. Without Honor, valor becomes mere noise, and the oath becomes a lie that wears armor." },
+    { id: "spirituality", class: "Ranger",   mantra: "OM",   stone: "white diamond",  color_hex: "#f3ebd0", town: "Skara Brae",   principles: "Truth + Love + Courage",         companion: "Shamino", card: "cards/v2/spirituality.jpeg",
+      description: "The practice of attention to the larger whole — the quiet that holds the noisy things. Spirituality dwells in Skara Brae, the misted isle where the seen and the unseen sit closer than elsewhere. It is the only virtue that joins all three Principles at once — Truth and Love and Courage, the meeting place. Its companion is Shamino the Ranger, who walks where the forest is thickest because that is where the world is most honest. Without Spirituality, every other virtue mistakes itself for the whole." },
+    { id: "humility",     class: "Shepherd", mantra: "LUM",  stone: "black",          color_hex: "#888090", town: "New Magincia", principles: "the Void (absence of Pride)",    companion: "Katrina", card: "cards/v2/humility.jpeg",
+      description: "The absence of pride. Of all eight, Humility is the strangest — it derives from the Void, the silence around the Principles. Its town is New Magincia, rebuilt from the ruins of a city that worshipped itself to death. Its stone is unornamented black, plain as a river-pebble. Its companion is Katrina the Shepherd, who tends what others overlook. Without Humility, every other virtue becomes a trophy to be displayed, and the Avatar becomes only the latest king to fall." }
   ],
 
   parables: /* INLINED FROM seed/parables.json */ {
@@ -582,10 +769,11 @@ function resetCards() {
 
 /* --- audio (Gypsy voice) --- */
 let currentAudio = null;
-function playGypsyAudio(audioKey) {
-  if (!audioKey) return;
+function playAudio(relPath) {
+  // relPath is relative to /audio, no extension. e.g. 'gypsy/entry' or 'parables/compassion-honesty'
+  if (!relPath) return;
   if (currentAudio) { try { currentAudio.pause(); } catch (e) {} currentAudio = null; }
-  const a = new Audio(`audio/gypsy/${audioKey}.mp3`);
+  const a = new Audio(`audio/${relPath}.mp3`);
   a.volume = 0.95;
   // Browsers may still reject autoplay if the user never interacted; we swallow that.
   a.play().catch(() => {});
@@ -599,7 +787,7 @@ async function gypsySpeaks(text, audioKey) {
   void el.offsetWidth;
   el.textContent = text;
   el.classList.add('fade-in');
-  if (audioKey) playGypsyAudio(audioKey);
+  if (audioKey) playAudio(`gypsy/${audioKey}`);
 }
 function setScene(text) {
   $('#scene-text').textContent = text || '';
@@ -682,12 +870,15 @@ async function nextQuestion() {
   $('#card-right').classList.add('flipped');
   await sleep(900);
 
-  // Show the parable.
-  const parable = DATA.parables[pairKey(a, b)] || {
+  // Show the parable, and let the Gypsy read its scene aloud.
+  const key = pairKey(a, b);
+  const parable = DATA.parables[key] || {
     scene: `Thou must weigh ${a} against ${b}. Which calls to thee?`,
     options: { [a]: `Choose ${a}.`, [b]: `Choose ${b}.` }
   };
   setScene(parable.scene);
+  // Give the framing line a moment to land before layering the parable on top.
+  setTimeout(() => playAudio(`parables/${key}`), 500);
   presentChoices(a, b, parable);
 }
 
@@ -799,7 +990,7 @@ async function beginWhisper(winner) {
   const w = $('#whisper');
   $('#whisper-text').textContent = DATA.script.whisper;
   w.classList.add('shown');
-  playGypsyAudio('whisper');
+  playAudio('gypsy/whisper');
   await sleep(4500);
   showPermalink(winner);
 }
@@ -822,15 +1013,116 @@ async function showPermalink(winner) {
   };
 }
 
-/* --- kick off: intro screen waits for a user gesture before audio --- */
+/* ============================================================
+   Card Browser — accessible at the end of a reading and at /cards
+   ============================================================ */
+
+const CB = { index: 0, cameFromCeremony: false };
+
+function renderCardBrowser() {
+  const v = DATA.virtues[CB.index];
+  const card = $('#cb-card');
+  const mantra = $('#cb-mantra');
+  const virtueEl = $('#cb-virtue');
+  const meta = $('#cb-meta');
+  const desc = $('#cb-desc');
+
+  // Brief fade between cards.
+  card.classList.add('fade');
+  mantra.classList.add('fade');
+  setTimeout(() => {
+    card.style.backgroundImage = `url('${v.card}')`;
+    card.style.setProperty('--cb-glow', v.color_hex);
+    document.documentElement.style.setProperty('--cb-glow', v.color_hex);
+    mantra.textContent = v.mantra;
+    virtueEl.textContent = v.id.charAt(0).toUpperCase() + v.id.slice(1);
+    meta.innerHTML =
+      `<span><b>class</b> ${v.class}</span>` +
+      `<span><b>principle</b> ${v.principles}</span>` +
+      `<span><b>town</b> ${v.town}</span>` +
+      `<span><b>stone</b> ${v.stone}</span>` +
+      `<span><b>companion</b> ${v.companion}</span>`;
+    desc.textContent = v.description;
+    card.classList.remove('fade');
+    mantra.classList.remove('fade');
+    renderDots();
+  }, 200);
+}
+
+function renderDots() {
+  const dots = $('#cb-dots');
+  dots.innerHTML = '';
+  DATA.virtues.forEach((v, i) => {
+    const d = document.createElement('div');
+    d.className = 'cb-dot' + (i === CB.index ? ' current' : '');
+    d.title = v.id;
+    d.style.setProperty('--cb-glow', v.color_hex);
+    d.addEventListener('click', () => { CB.index = i; renderCardBrowser(); });
+    dots.appendChild(d);
+  });
+}
+
+function openCardBrowser(startIndex = 0, cameFromCeremony = false) {
+  CB.index = Math.max(0, Math.min(7, startIndex));
+  CB.cameFromCeremony = cameFromCeremony;
+  $('#card-browser').classList.add('cb-shown');
+  $('#card-browser').setAttribute('aria-hidden', 'false');
+  // Mute any lingering ceremony audio when entering the browser.
+  if (currentAudio) { try { currentAudio.pause(); } catch (e) {} }
+  renderCardBrowser();
+}
+
+function closeCardBrowser() {
+  $('#card-browser').classList.remove('cb-shown');
+  $('#card-browser').setAttribute('aria-hidden', 'true');
+  if (!CB.cameFromCeremony) {
+    // Direct /cards visit — send them back to the wagon door.
+    history.pushState({}, '', '/');
+    location.reload();
+  }
+}
+
+function cbNext() { CB.index = (CB.index + 1) % 8; renderCardBrowser(); }
+function cbPrev() { CB.index = (CB.index + 7) % 8; renderCardBrowser(); }
+
+document.addEventListener('keydown', e => {
+  if (!$('#card-browser').classList.contains('cb-shown')) return;
+  if (e.key === 'Escape')      closeCardBrowser();
+  else if (e.key === 'ArrowRight' || e.key === ' ') cbNext();
+  else if (e.key === 'ArrowLeft') cbPrev();
+  else if (/^[1-8]$/.test(e.key)) { CB.index = parseInt(e.key, 10) - 1; renderCardBrowser(); }
+});
+
+/* --- kick off ------------------------------------------------- */
+
+function isCardsRoute() {
+  const p = location.pathname.replace(/\/+$/, '');
+  return p === '/cards' || p.endsWith('/cards');
+}
+
 window.addEventListener('DOMContentLoaded', () => {
-  // Prefetch the entry audio so it starts cleanly on first click.
+  // Wire card-browser buttons once the DOM is ready.
+  $('#cb-close').addEventListener('click', closeCardBrowser);
+  $('#cb-prev').addEventListener('click', cbPrev);
+  $('#cb-next').addEventListener('click', cbNext);
+  $('#view-deck').addEventListener('click', () => openCardBrowser(0, true));
+
+  // Direct /cards visit bypasses the wagon entirely.
+  if (isCardsRoute()) {
+    $('#intro').remove();
+    $('#dialogue').style.display = 'none';
+    $('#abacus').style.display = 'none';
+    $('#table-area').style.display = 'none';
+    openCardBrowser(0, false);
+    return;
+  }
+
+  // Otherwise: usual ceremony flow — intro gate, then casting.
   const prefetch = new Audio('audio/gypsy/entry.mp3');
   prefetch.preload = 'auto';
 
   const enter = () => {
     $('#intro').classList.add('hidden');
-    // Tiny no-op play to "unlock" audio context after the user gesture.
     prefetch.play().then(() => prefetch.pause()).catch(() => {});
     setTimeout(startCasting, 800);
   };
