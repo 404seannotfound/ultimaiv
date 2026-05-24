@@ -26,6 +26,7 @@ cp _redirects  "$DIST/"
 cp -R cards    "$DIST/"
 cp -R scenes   "$DIST/"
 cp -R audio    "$DIST/"
+cp -R devlog   "$DIST/"
 
 # /cards path needs its own index.html because the assets live under cards/.
 # Without this Pages serves a directory listing (or 308s to /).

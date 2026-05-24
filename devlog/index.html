@@ -1,0 +1,282 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>A Chronicle of the Casting — ultimaiv</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=IM+Fell+English+SC&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --candle-amber: #f6c170;
+    --candle-glow: #c98a2b;
+    --deep-indigo: #1a1530;
+    --shadow: #0a0608;
+    --parchment: #efdfb3;
+    --parchment-dim: #cbb88a;
+    --vellum: #e9d9a8;
+    --ink: #2a1f10;
+    --rule: rgba(246,193,112,0.32);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { min-height: 100%; }
+  body {
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    color: var(--parchment);
+    background: #0a0608;
+    line-height: 1.5;
+    position: relative;
+  }
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 90vw 70vh at 50% 0%, rgba(60,38,18,0.45) 0%, transparent 70%),
+      linear-gradient(180deg, #1d1208 0%, #0e0808 50%, #050306 100%);
+    pointer-events: none;
+    z-index: -1;
+  }
+
+  main.chronicle {
+    max-width: 980px;
+    margin: 0 auto;
+    padding: 9vh 6vw 6vh;
+  }
+
+  header.chronicle-head {
+    text-align: center;
+    margin-bottom: 9vh;
+    padding-bottom: 4vh;
+    border-bottom: 1px solid var(--rule);
+  }
+  header.chronicle-head h1 {
+    font-family: 'IM Fell English SC', serif;
+    font-weight: 400;
+    font-size: clamp(2.2rem, 5vw, 3.6rem);
+    letter-spacing: 0.18em;
+    color: var(--candle-amber);
+    text-shadow: 0 0 32px rgba(246,193,112,0.35);
+    margin-bottom: 1.4vh;
+  }
+  header.chronicle-head p {
+    font-style: italic;
+    color: var(--parchment-dim);
+    font-size: 1.3rem;
+  }
+  header.chronicle-head a {
+    color: var(--candle-amber);
+    text-decoration: none;
+    border-bottom: 1px dotted rgba(246,193,112,0.4);
+  }
+  header.chronicle-head a:hover { border-bottom-color: var(--candle-amber); }
+
+  article.leaf {
+    display: grid;
+    grid-template-columns: 1.05fr 1fr;
+    gap: 4vw;
+    align-items: center;
+    margin-bottom: 9vh;
+  }
+  article.leaf:nth-of-type(even) {
+    grid-template-columns: 1fr 1.05fr;
+  }
+  article.leaf:nth-of-type(even) .leaf-panel { order: 2; }
+  article.leaf:nth-of-type(even) .leaf-text  { order: 1; }
+  @media (max-width: 720px) {
+    article.leaf, article.leaf:nth-of-type(even) { grid-template-columns: 1fr; gap: 3vh; }
+    article.leaf:nth-of-type(even) .leaf-panel { order: initial; }
+    article.leaf:nth-of-type(even) .leaf-text  { order: initial; }
+  }
+
+  .leaf-panel {
+    position: relative;
+  }
+  .leaf-panel img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 0.6vh;
+    box-shadow: 0 18px 50px rgba(0,0,0,0.7), 0 0 0 1px rgba(246,193,112,0.18);
+  }
+
+  .leaf-text h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 500;
+    font-size: clamp(1.8rem, 3.4vw, 2.6rem);
+    color: var(--parchment);
+    letter-spacing: 0.01em;
+    margin-bottom: 0.6vh;
+  }
+  .leaf-meta {
+    font-family: 'IM Fell English SC', serif;
+    font-size: 0.85rem;
+    letter-spacing: 0.18em;
+    color: var(--candle-amber);
+    text-transform: lowercase;
+    margin-bottom: 2vh;
+    opacity: 0.85;
+  }
+  .leaf-text p.prose {
+    font-size: 1.2rem;
+    color: var(--parchment);
+    line-height: 1.62;
+  }
+
+  hr.divider {
+    border: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--rule), transparent);
+    margin: 0 auto 9vh;
+    width: 60%;
+  }
+
+  footer.chronicle-foot {
+    text-align: center;
+    padding-top: 5vh;
+    border-top: 1px solid var(--rule);
+    color: var(--parchment-dim);
+    font-style: italic;
+    line-height: 1.7;
+  }
+  footer.chronicle-foot .links {
+    display: flex;
+    gap: 2vw;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin: 2.4vh 0 5vh;
+  }
+  footer.chronicle-foot a.pill {
+    background: transparent;
+    border: 1px solid rgba(246,193,112,0.35);
+    color: var(--candle-amber);
+    font-family: 'IM Fell English SC', serif;
+    font-size: 0.85rem;
+    letter-spacing: 0.2em;
+    padding: 0.9rem 2.2rem;
+    border-radius: 999px;
+    text-decoration: none;
+    transition: all 200ms;
+    text-transform: lowercase;
+    font-style: normal;
+  }
+  footer.chronicle-foot a.pill:hover {
+    border-color: var(--candle-amber);
+    background: rgba(40,28,18,0.55);
+    box-shadow: 0 0 14px rgba(246,193,112,0.3);
+  }
+  footer.chronicle-foot .colophon {
+    margin-top: 6vh;
+    padding-top: 3vh;
+    border-top: 1px dotted rgba(246,193,112,0.18);
+    font-size: 0.9rem;
+    color: var(--parchment-dim);
+  }
+  footer.chronicle-foot .colophon a {
+    color: var(--candle-amber);
+    text-decoration: none;
+    border-bottom: 1px dotted rgba(246,193,112,0.4);
+    font-style: normal;
+    font-family: 'IM Fell English SC', serif;
+    font-size: 0.9rem;
+    letter-spacing: 0.14em;
+    padding-bottom: 0.1em;
+  }
+  footer.chronicle-foot .colophon a:hover { border-bottom-color: var(--candle-amber); }
+</style>
+</head>
+<body>
+
+<main class="chronicle">
+
+  <header class="chronicle-head">
+    <h1>A Chronicle of the Casting</h1>
+    <p>from first stroke to final seal — the making of <a href="/">ultimaiv</a></p>
+  </header>
+
+  <article class="leaf">
+    <div class="leaf-panel"><img src="/devlog/v1/9ea36ae.jpeg" alt="The First Stroke — a scribe begins the page"></div>
+    <div class="leaf-text">
+      <h2>The First Stroke</h2>
+      <div class="leaf-meta">9ea36ae · 23 may 2026</div>
+      <p class="prose">On the first evening the wagon was wheeled to the edge of the fair. Eight blank cards were sketched in silverpoint upon the parchment, the Gypsy's voice was rendered in sixteen lines, twenty-eight parables were written down, and the prototype was set down whole — a single page that opened to the candlelight.</p>
+    </div>
+  </article>
+  <hr class="divider">
+
+  <article class="leaf">
+    <div class="leaf-panel"><img src="/devlog/v1/56e92f3.jpeg" alt="The Eight Cards Spread — a monk fans the deck while another sings"></div>
+    <div class="leaf-text">
+      <h2>The Eight Cards Spread</h2>
+      <div class="leaf-meta">56e92f3 · 23 may 2026</div>
+      <p class="prose">Once the wagon stood, the cards needed to be touched. A small chamber was carved within for the seeker who wished only to browse the deck — a <code>/cards</code> door, accessible without entering the ceremony. Twenty-eight parable scenes were given to the Gypsy's voice, so that each dilemma might be spoken aloud as it appeared. The deck-browser opened from a small pill at the end of every reading.</p>
+    </div>
+  </article>
+  <hr class="divider">
+
+  <article class="leaf">
+    <div class="leaf-panel"><img src="/devlog/v1/ddc95ab.jpeg" alt="The Crooked Path Made Straight — a cartographer corrects the map"></div>
+    <div class="leaf-text">
+      <h2>The Crooked Path Made Straight</h2>
+      <div class="leaf-meta">ddc95ab · 23 may 2026</div>
+      <p class="prose">The <code>/cards</code> door, on first opening, led nowhere — a routing tangle between the page and the folder of card-images, which shared the same name. A signpost was placed: shim an index inside the cards directory, simplify the <code>_redirects</code>, and the door swung wide. The wandering pilgrim arrived where they meant to.</p>
+    </div>
+  </article>
+  <hr class="divider">
+
+  <article class="leaf">
+    <div class="leaf-panel"><img src="/devlog/v1/bc3389d.jpeg" alt="The Wall Removed — two chambers joined into one"></div>
+    <div class="leaf-text">
+      <h2>The Wall Removed</h2>
+      <div class="leaf-meta">bc3389d · 23 may 2026</div>
+      <p class="prose">What had been two screens at the end of a reading — a permalink panel and a separate deck-browser — were joined into one. The chosen virtue's card now opens in the deck-browser itself, with its companions arrayed beneath, the permalink lettered in the footer, and a new section painted at the bottom of every card: four short suggestions for cultivating that virtue, in the same archaic register as the Gypsy's voice.</p>
+    </div>
+  </article>
+  <hr class="divider">
+
+  <article class="leaf">
+    <div class="leaf-panel"><img src="/devlog/v1/3ad855f.jpeg" alt="The Stuck Gear — a clockmaker untangles the mechanism"></div>
+    <div class="leaf-text">
+      <h2>The Stuck Gear</h2>
+      <div class="leaf-meta">3ad855f · 23 may 2026</div>
+      <p class="prose">Two stones lay across the road. First: the deck-browser at <code>/cards/</code> rendered every word but no images, because its assets resolved against the wrong path — all URLs were rewritten absolute. Second: the casting did not auto-advance from its final reveal, because the reveal layer covered the dialogue panel and hid the only button. The gear was untangled; the ceremony walks itself to the end now.</p>
+    </div>
+  </article>
+  <hr class="divider">
+
+  <article class="leaf">
+    <div class="leaf-panel"><img src="/devlog/v1/301543b.jpeg" alt="The Margin Measured — an illuminator widens the bottom of the page"></div>
+    <div class="leaf-text">
+      <h2>The Margin Measured</h2>
+      <div class="leaf-meta">301543b · 23 may 2026</div>
+      <p class="prose">Upon final viewing, the thumbnail strip sat atop the cultivation list, hiding the last two bullets. The bottom margin of the deck-browser was widened to give the strip its own air. A small skip-ahead link was added beneath the Enter the Wagon button on the intro screen, for those who came only for the deck.</p>
+    </div>
+  </article>
+  <hr class="divider">
+
+  <article class="leaf">
+    <div class="leaf-panel"><img src="/devlog/v1/04d4f02.jpeg" alt="The Chronicle Sealed — the signboard is hung and the wax seal pressed"></div>
+    <div class="leaf-text">
+      <h2>The Chronicle Sealed</h2>
+      <div class="leaf-meta">04d4f02 · 23 may 2026</div>
+      <p class="prose">Finally the README was brought current — both ways in, the deck-browser, the cultivation suggestions, the new audio paths, the deploy shim. A fan-tribute license note was added at the bottom, naming what is mine and what belongs to the older makers. The signboard was hung, the wax seal pressed.</p>
+    </div>
+  </article>
+
+  <footer class="chronicle-foot">
+    <p>Seven commits, one evening, one ceremony.</p>
+    <div class="links">
+      <a class="pill" href="/">enter the wagon</a>
+      <a class="pill" href="/cards/">browse the deck</a>
+      <a class="pill" href="https://github.com/404seannotfound/ultimaiv" target="_blank" rel="noopener">source on github →</a>
+    </div>
+    <div class="colophon">
+      <p>The illuminated panels above were generated with the same method that powers <a href="https://codebackstory.com" target="_blank" rel="noopener">codebackstory.com</a> — a SaaS that turns any git history into a hand-drawn chronicle of its own.</p>
+    </div>
+  </footer>
+
+</main>
+
+</body>
+</html>
