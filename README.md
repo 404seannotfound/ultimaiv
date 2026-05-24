@@ -3,47 +3,65 @@
 A love letter to *Ultima IV: Quest of the Avatar*'s character creation —
 the wagon, the Gypsy, the cards of virtue, the abacus of stones.
 
+Live: **<https://ultimaiv.pages.dev/>**
+
 A single-page recreation of the 7-question virtue bracket, in original art
 and voice. Eight tarot cards laid on a velvet table; an otherworldly voice
 weighs your soul against itself; one stone stays lit while the others go
-dark; the chosen virtue is named, and the wagon fades.
+dark; the chosen virtue is named, and the wagon fades. Then the deck opens
+so you can read about every virtue you didn't become.
 
 Not the game. Just the ceremony.
+
+## The two ways in
+
+- **<https://ultimaiv.pages.dev/>** — full ceremony. Enter the wagon, hear
+  the Gypsy's greeting, weigh seven dilemmas, watch your stones go dark
+  one by one, see the chosen card revealed and named.
+- **<https://ultimaiv.pages.dev/cards/>** — skip the ceremony, just flip
+  through the deck. The intro screen also has a small "skip ahead" link.
+
+The end of the ceremony lands you in the same deck browser, with your
+chosen virtue selected, a permalink to your reading, and a way back to the
+wagon door if you want to begin again.
 
 ## What's here
 
 ```
 .
-├── index.html          single-file prototype (open via local server)
+├── index.html              single-file prototype (open via local server)
+├── _redirects              Cloudflare Pages routing for /cards
 ├── seed/
-│   ├── virtues.json    canonical bundle for each of the 8 virtues
-│   ├── script.json     the Gypsy's fixed lines (locked)
-│   ├── parables.json   28 short medieval-parable dilemmas, one per pairing
-│   ├── cards.tsv       art-prompt seeds for the 8 tarot cards
-│   └── gypsy_script.md draft markdown of the script (authoring notes)
+│   ├── virtues.json        canonical bundle for each of the 8 virtues
+│   ├── script.json         the Gypsy's fixed lines (locked)
+│   ├── parables.json       28 short medieval-parable dilemmas, one per pairing
+│   ├── cards.tsv           art-prompt seeds for the 8 tarot cards
+│   └── gypsy_script.md     authoring notes for the script
 ├── cards/
-│   ├── v1/             first-pass deck (kept as archive)
-│   ├── v2/             current deck — virtue + mantra + stone + town setting
-│   └── v2_fix/         targeted re-rolls of Honor + Compassion
+│   ├── v1/                 first-pass deck (archive)
+│   ├── v2/                 current deck — virtue + mantra + stone + town
+│   └── v2_fix/             targeted re-rolls of Honor + Compassion
 ├── scenes/
 │   ├── wagon_interior.jpeg
 │   ├── card_back.jpeg
 │   └── gypsy.jpeg
 ├── audio/
-│   └── gypsy/          16 ElevenLabs mp3s (8 phase lines + 8 per-virtue closings)
+│   ├── gypsy/              16 fixed Gypsy lines (entry, transitions, 8 closings, whisper)
+│   └── parables/           28 parable scenes, one per virtue pairing
 └── scripts/
-    ├── gen_cards.sh    parallel xAI Grok render of the deck from seed/cards.tsv
-    ├── gen_scene.sh    one-off scene image
-    ├── gen_voice.sh    ElevenLabs render of every line in seed/script.json
-    └── deploy.sh       Cloudflare Pages deploy (stages dist/, then wrangler)
+    ├── gen_cards.sh        parallel xAI Grok render of the deck from seed/cards.tsv
+    ├── gen_scene.sh        one-off scene image
+    ├── gen_voice.sh        ElevenLabs render of every line in seed/script.json
+    ├── gen_parables.sh     ElevenLabs render of every scene in seed/parables.json
+    └── deploy.sh           Cloudflare Pages deploy (stages dist/, then wrangler)
 ```
 
 ## Stack
 
-- **Front-end:** vanilla HTML / CSS / JS, single file
+- **Front-end:** vanilla HTML / CSS / JS, single self-contained file
 - **Hosting:** Cloudflare Pages (free tier)
-- **Art:** xAI Grok image generation (~$0.10/card)
-- **Voice:** ElevenLabs (default voice = Daniel, swappable via `.env`)
+- **Art:** xAI Grok image generation (~$0.10/card, $0.80 for a full deck)
+- **Voice:** ElevenLabs — voice ID set via `ELEVENLABS_VOICE_GYPSY` in `.env`
 - **Future:** D1 for permalink/session storage and live LLM parables
 
 ## Run locally
@@ -54,7 +72,10 @@ python3 -m http.server 8765
 open http://localhost:8765
 ```
 
-`file://` doesn't work for the audio (browser CORS); use any local server.
+`file://` doesn't work for the audio (browser security); use any local
+server. The `/cards/` subpath is only set up by the deploy step — locally,
+hit `/` and use the on-screen skip link or invoke `openCardBrowser(0)` from
+the console to test the deck view.
 
 ## Regenerate the art
 
@@ -64,17 +85,22 @@ open http://localhost:8765
 ./scripts/gen_scene.sh scenes/foo.jpeg "prompt..."
 ```
 
+If you re-roll into a new versioned folder (`v3`, `v4`…), update the `card:`
+paths in `DATA.virtues` inside `index.html` so the browser picks up the new
+art. The deploy script copies whichever directories live under `cards/`.
+
 ## Regenerate the voice
 
 ```sh
-./scripts/gen_voice.sh                                    # uses default voice
-./scripts/gen_voice.sh <ELEVENLABS_VOICE_ID>              # swap voice
-# or set ELEVENLABS_VOICE_GYPSY in .env and re-run
+./scripts/gen_voice.sh                          # 16 Gypsy lines
+./scripts/gen_parables.sh                       # 28 parable scenes
+./scripts/gen_voice.sh    <ELEVENLABS_VOICE_ID> # swap voice for the Gypsy
+./scripts/gen_parables.sh <ELEVENLABS_VOICE_ID> # match voice for parables
 ```
 
-Browse the ElevenLabs library; copy any voice ID and you can re-roll all 16
-lines in seconds. Settings are tuned for ceremonial pacing
-(low stability, high similarity, mid style).
+Both scripts refuse to clobber existing files; delete or move the target
+mp3s before re-rolling. Settings are tuned for ceremonial pacing (low
+stability, high similarity, mid style).
 
 ## Deploy
 
@@ -82,33 +108,32 @@ lines in seconds. Settings are tuned for ceremonial pacing
 ./scripts/deploy.sh
 ```
 
-Requires `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID`, and `PAGES_PROJECT`
-in `.env`. The token needs the `Cloudflare Pages → Edit` permission for the
-account; if you've restricted it to an IP allowlist, deploy from that network.
+Requires `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID`, and
+`PAGES_PROJECT` in `.env`. The token needs `Cloudflare Pages → Edit`
+permission for the account. The script stages `dist/`, copies
+`index.html` to `dist/cards/index.html` (so `/cards/` works alongside the
+existing `cards/` image directory), then runs `wrangler pages deploy`.
 
 ## Canonical Britannian bundle
 
-| Virtue | Principles | Class | Mantra | Stone | Town | Symbol |
+| Virtue | Principles | Class | Mantra | Stone | Town | Companion |
 |---|---|---|---|---|---|---|
-| Honesty | Truth | Mage | AHM | sapphire | Moonglow | open hand |
-| Compassion | Love | Bard | MU | yellow | Britain | heart in roses |
-| Valor | Courage | Fighter | RA | red | Jhelom | upraised sword |
-| Justice | Truth + Love | Druid | BEH | emerald | Yew | balanced scales |
-| Sacrifice | Love + Courage | Tinker | CAH | amber | Minoc | falling tear |
-| Honor | Courage + Truth | Paladin | SUMM | amethyst | Trinsic | golden chalice |
-| Spirituality | all three | Ranger | OM | white diamond | Skara Brae | luminous ankh |
-| Humility | Void (absence of Pride) | Shepherd | LUM | black | New Magincia | shepherd's staff |
+| Honesty | Truth | Mage | AHM | sapphire | Moonglow | Mariah |
+| Compassion | Love | Bard | MU | yellow | Britain | Iolo |
+| Valor | Courage | Fighter | RA | red | Jhelom | Geoffrey |
+| Justice | Truth + Love | Druid | BEH | emerald | Yew | Jaana |
+| Sacrifice | Love + Courage | Tinker | CAH | amber | Minoc | Julia |
+| Honor | Courage + Truth | Paladin | SUMM | amethyst | Trinsic | Dupre |
+| Spirituality | all three | Ranger | OM | white diamond | Skara Brae | Shamino |
+| Humility | Void (absence of Pride) | Shepherd | LUM | black | New Magincia | Katrina |
 
-## Status
+Each card in the deck browser also carries an original prose description
+and four short suggestions for cultivating that virtue, in the same
+archaic register as the Gypsy's voice.
 
-Prototype. The bracket runs, art and voice are present, the ceremony works
-end-to-end. The "permalink" at the end is a placeholder — D1-backed session
-persistence and live LLM-generated parables (so every reading is one-of-one)
-are the next milestones.
+## License
 
-## Credits & inspiration
-
-Ultima IV: Quest of the Avatar by Richard Garriott / Origin Systems, 1985.
-This is a personal, non-commercial homage with original art, original
-dialogue, and original parable text. Nothing here is affiliated with EA or
-the Ultima property.
+Original art, voice, prose, and code in this repository are mine. The
+*Ultima* setting, virtues, mantras, town names, and Britannian iconography
+belong to their respective rights holders; this work is a fan tribute, not
+affiliated with or endorsed by anyone associated with the *Ultima* series.
